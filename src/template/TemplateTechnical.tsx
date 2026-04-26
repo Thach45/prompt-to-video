@@ -7,6 +7,8 @@ import {
   useVideoConfig,
   Img,
   interpolateColors,
+  Audio,
+  Sequence,
 } from "remotion";
 import { 
   Sparkles, Target, Zap, Rocket, CheckCircle, Quote, 
@@ -37,6 +39,8 @@ export type VideoScene = {
   durationSec: number;
   accent: string;
   media?: MediaConfig;
+  audioUrl?: string;
+  voiceover?: string;
 };
 
 type TemplateTechnicalProps = {
@@ -420,6 +424,20 @@ export const TemplateTechnical: React.FC<TemplateTechnicalProps> = ({
 
   return (
     <AbsoluteFill style={{ background: "#050505", color: "#f8fafc", overflow: "hidden", opacity: outroFade }}>
+      {/* Voiceover Audio Rendering */}
+      {(() => {
+        let currentStartFrame = 0;
+        return scenes.map((s, i) => {
+          const startFrame = currentStartFrame;
+          currentStartFrame += Math.round(s.durationSec * fps);
+          if (!s.audioUrl) return null;
+          return (
+            <Sequence key={`audio-${i}`} from={startFrame}>
+              <Audio src={s.audioUrl} />
+            </Sequence>
+          );
+        });
+      })()}
       
       {/* 1. LAYER 0: HỆ THỐNG BACKGROUND CHỐNG TRỐNG TRẢI */}
       {/* Lưới Grid Base */}

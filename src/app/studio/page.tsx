@@ -14,6 +14,8 @@ import {
   Loader2,
   Plus,
   X,
+  Mic,
+  Music,
 } from "lucide-react";
 import { ShortVideoTemplate } from "@/template/ShareNews";
 import { TemplateTechnical } from "@/template/TemplateTechnical";
@@ -39,7 +41,27 @@ const TEMPLATE_OPTIONS: TemplateOption[] = [
   },
 ];
 
+const VOICE_OPTIONS = [
+  { id: "vi-VN-HoaiMyNeural", label: "Hoài My (Nữ)", gender: "female" },
+  { id: "vi-VN-NamMinhNeural", label: "Nam Minh (Nam)", gender: "male" },
+  { id: "en-US-EmmaMultilingualNeural", label: "Emma (English)", gender: "female" },
+];
+
 const buildJsonSample = (spec: VideoSpec) => JSON.stringify(spec, null, 2);
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const getAudioDuration = (url: string): Promise<number> => {
+  return new Promise((resolve) => {
+    const audio = new Audio(url);
+    audio.onloadedmetadata = () => {
+      resolve(audio.duration);
+    };
+    audio.onerror = () => {
+      resolve(0); // Fallback
+    };
+  });
+};
 
 export default function StudioPage() {
   const [tab, setTab] = useState<PanelTab>("preview");
@@ -53,6 +75,7 @@ export default function StudioPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [editableJson, setEditableJson] = useState(buildJsonSample(defaultVideoSpec));
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelection>("auto");
+  const [selectedVoice, setSelectedVoice] = useState(VOICE_OPTIONS[0].id);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
   const PreviewComponent =
     videoSpec.templateId === "technical" ? TemplateTechnical : ShortVideoTemplate;
@@ -167,13 +190,71 @@ export default function StudioPage() {
       }
 
       setVideoSpec(generatedSpec);
-      setEditableJson(buildJsonSample(generatedSpec));
+      
+      // --- AUDIO GENERATION STAGE ---
+      setStreamStatus("Đang lồng tiếng...");
+      const updatedScenes = [...generatedSpec.scenes];
+      let totalFrames = 0;
+
+      for (let i = 0; i < updatedScenes.length; i++) {
+        const scene = updatedScenes[i];
+        if (scene.voiceover) {
+          let success = false;
+          let retries = 10;
+          
+          while (!success && retries > 0) {
+            try {
+              // Thêm delay nhỏ giữa các request để tránh rate limit của Edge TTS
+              if (i > 0) await sleep(3000); 
+
+              const ttsResponse = await fetch("/api/tts", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: scene.voiceover, voice: selectedVoice }),
+              });
+              
+              if (ttsResponse.ok) {
+                const blob = await ttsResponse.blob();
+                const audioUrl = URL.createObjectURL(blob);
+                const duration = await getAudioDuration(audioUrl);
+                
+                if (duration > 0) {
+                  updatedScenes[i] = {
+                    ...scene,
+                    audioUrl,
+                    durationSec: Math.max(3, Math.round((duration + 0.5) * 10) / 10), // Padding 0.5s
+                  };
+                  success = true;
+                }
+              } else {
+                console.error(`TTS Error (Status: ${ttsResponse.status}). Retrying...`);
+                retries--;
+                await sleep(3000);
+              }
+            } catch (err) {
+              console.error("TTS Error for scene", i, err);
+              retries--;
+              await sleep(3000);
+            }
+          }
+        }
+        totalFrames += Math.round(updatedScenes[i].durationSec * generatedSpec.fps);
+      }
+
+      const finalSpec = {
+        ...generatedSpec,
+        scenes: updatedScenes,
+        durationInFrames: Math.min(5400, Math.max(90, totalFrames)),
+      };
+
+      setVideoSpec(finalSpec);
+      setEditableJson(buildJsonSample(finalSpec));
       setHasGenerated(true);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          text: `Đã tạo xong (${generatedSpec.templateId}): ${generatedSpec.title}`,
+          text: `Đã hoàn tất video (${finalSpec.templateId}) kèm giọng đọc: ${finalSpec.title}`,
         },
       ]);
       setTab("preview");
@@ -265,6 +346,22 @@ export default function StudioPage() {
                   <Plus size={13} />
                   Template
                 </button>
+                <div className="relative group">
+                  <select
+                    value={selectedVoice}
+                    onChange={(e) => setSelectedVoice(e.target.value)}
+                    className="appearance-none bg-white border border-gray-200 rounded-full h-8 pl-8 pr-3 text-[11px] font-medium text-gray-600 outline-none hover:border-gray-300 focus:border-black transition-all cursor-pointer"
+                  >
+                    {VOICE_OPTIONS.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        {v.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-gray-600 transition-colors">
+                    <Mic size={12} />
+                  </div>
+                </div>
                 <button
                   type="submit"
                   disabled={!inputText.trim() || isGenerating}

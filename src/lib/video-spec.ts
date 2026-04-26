@@ -13,6 +13,8 @@ export type VideoScene = {
     data?: number[];
     items?: string[];
   };
+  voiceover?: string;
+  audioUrl?: string;
 };
 
 const INTERNAL_ICON_NAMES = [
@@ -236,6 +238,8 @@ export const clampVideoSpec = (input: Partial<VideoSpec>): VideoSpec => {
       accent: safeAccent,
       layout: safeLayout,
       media: safeMedia,
+      voiceover: scene.voiceover?.trim(),
+      audioUrl: scene.audioUrl?.trim(),
     });
   }
 

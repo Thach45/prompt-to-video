@@ -7,6 +7,8 @@ import {
   useVideoConfig,
   Img,
   interpolateColors,
+  Audio,
+  Sequence,
 } from "remotion";
 import { 
   Sparkles, Target, Zap, Rocket, CheckCircle, Quote, 
@@ -36,6 +38,8 @@ export type VideoScene = {
   durationSec: number;
   accent: string;
   media?: MediaConfig;
+  audioUrl?: string;
+  voiceover?: string;
 };
 
 type PromptVideoProps = {
@@ -326,6 +330,21 @@ export const ShortVideoTemplate: React.FC<PromptVideoProps> = ({
 
   return (
     <AbsoluteFill style={{ background: "#020617", color: "#f8fafc", fontFamily: "var(--font-geist-sans), system-ui, sans-serif", opacity: outroFade }}>
+      {/* Voiceover Audio Rendering */}
+      {(() => {
+        let currentStartFrame = 0;
+        return scenes.map((s, i) => {
+          const startFrame = currentStartFrame;
+          currentStartFrame += Math.round(s.durationSec * fps);
+          if (!s.audioUrl) return null;
+          return (
+            <Sequence key={`audio-${i}`} from={startFrame}>
+              <Audio src={s.audioUrl} />
+            </Sequence>
+          );
+        });
+      })()}
+
       <AbsoluteFill style={{ background: `radial-gradient(circle 1000px at ${bgX}% ${bgY}%, ${bgAccentColor}22, transparent 85%)`, transition: "background 0.8s ease" }} />
       <AbsoluteFill style={{ background: "radial-gradient(ellipse 100% 70% at 50% 100%, rgba(15, 23, 42, 0.95), transparent 100%)" }} />
       
