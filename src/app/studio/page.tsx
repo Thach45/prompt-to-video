@@ -214,7 +214,18 @@ export default function StudioPage() {
               });
               
               if (ttsResponse.ok) {
-                const blob = await ttsResponse.blob();
+                const responseData = await ttsResponse.json();
+                const { audioBase64, subtitles } = responseData;
+                
+                // Decode Base64 to Blob
+                const byteCharacters = atob(audioBase64);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let j = 0; j < byteCharacters.length; j++) {
+                  byteNumbers[j] = byteCharacters.charCodeAt(j);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: "audio/mpeg" });
+                
                 const audioUrl = URL.createObjectURL(blob);
                 const duration = await getAudioDuration(audioUrl);
                 
@@ -222,6 +233,7 @@ export default function StudioPage() {
                   updatedScenes[i] = {
                     ...scene,
                     audioUrl,
+                    subtitles,
                     durationSec: Math.max(3, Math.round((duration + 0.5) * 10) / 10), // Padding 0.5s
                   };
                   success = true;

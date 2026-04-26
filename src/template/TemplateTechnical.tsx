@@ -16,6 +16,7 @@ import {
   BrainCircuit, Users, Sun, Coffee, BookOpen, Star,
   Bot, Cpu, Terminal, Code, Network, Database, ChevronRight, Lock, Fingerprint
 } from "lucide-react";
+import { WordLevelSubtitles } from "@/components/WordLevelSubtitles";
 
 // --- TYPES ---
 export type MediaType = "icon" | "image" | "chart" | "list";
@@ -41,6 +42,7 @@ export type VideoScene = {
   media?: MediaConfig;
   audioUrl?: string;
   voiceover?: string;
+  subtitles?: { offset: number; duration: number; text: string }[];
 };
 
 type TemplateTechnicalProps = {
@@ -137,7 +139,7 @@ const getShortVideoLayout = (width: number, height: number) => {
   return {
     stagePaddingX: Math.round(60 * scale),
     stagePaddingTop: Math.round(150 * scale),
-    stagePaddingBottom: Math.round(150 * scale),
+    stagePaddingBottom: Math.round(450 * scale),
     titleSize: Math.round(80 * scale),
     subtitleSize: Math.round(36 * scale),
     chipSize: Math.round(26 * scale),
@@ -555,6 +557,15 @@ export const TemplateTechnical: React.FC<TemplateTechnicalProps> = ({
         )}
 
       </AbsoluteFill>
+
+      {/* Word-level Subtitles Overlay */}
+      {activeScene.subtitles && activeScene.subtitles.length > 0 && (
+        <WordLevelSubtitles 
+          subtitles={activeScene.subtitles} 
+          accentColor={activeAccent} 
+          localFrame={scene.localFrame} 
+        />
+      )}
     </AbsoluteFill>
   );
 };

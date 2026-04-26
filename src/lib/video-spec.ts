@@ -15,6 +15,11 @@ export type VideoScene = {
   };
   voiceover?: string;
   audioUrl?: string;
+  subtitles?: {
+    offset: number;
+    duration: number;
+    text: string;
+  }[];
 };
 
 const INTERNAL_ICON_NAMES = [
@@ -240,6 +245,7 @@ export const clampVideoSpec = (input: Partial<VideoSpec>): VideoSpec => {
       media: safeMedia,
       voiceover: scene.voiceover?.trim(),
       audioUrl: scene.audioUrl?.trim(),
+      subtitles: scene.subtitles,
     });
   }
 

@@ -1,3 +1,4 @@
+
 import React, { useMemo } from "react";
 import {
   AbsoluteFill,
@@ -15,6 +16,7 @@ import {
   BarChart3, ListChecks, Play, Heart, Share2, TrendingUp,
   BrainCircuit, Users, Sun, Coffee, BookOpen, Star
 } from "lucide-react";
+import { WordLevelSubtitles } from "@/components/WordLevelSubtitles";
 
 // --- TYPES ---
 export type MediaType = "icon" | "image" | "chart" | "list";
@@ -40,6 +42,7 @@ export type VideoScene = {
   media?: MediaConfig;
   audioUrl?: string;
   voiceover?: string;
+  subtitles?: { offset: number; duration: number; text: string }[];
 };
 
 type PromptVideoProps = {
@@ -128,7 +131,7 @@ const getShortVideoLayout = (width: number, height: number) => {
   return {
     stagePaddingX: Math.round(70 * scale),
     stagePaddingTop: Math.round(200 * scale),
-    stagePaddingBottom: Math.round(200 * scale),
+    stagePaddingBottom: Math.round(450 * scale),
     titleSize: Math.round(86 * scale),
     subtitleSize: Math.round(40 * scale),
     chipSize: Math.round(28 * scale),
@@ -431,6 +434,15 @@ export const ShortVideoTemplate: React.FC<PromptVideoProps> = ({
           )}
         </div>
       </AbsoluteFill>
+
+      {/* Word-level Subtitles Overlay */}
+      {activeScene.subtitles && activeScene.subtitles.length > 0 && (
+        <WordLevelSubtitles 
+          subtitles={activeScene.subtitles} 
+          accentColor={activeAccent} 
+          localFrame={scene.localFrame} 
+        />
+      )}
     </AbsoluteFill>
   );
 };
