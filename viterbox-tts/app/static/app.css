@@ -1,0 +1,97 @@
+:root {
+  --bg: #f4f7fc;
+  --panel: #ffffff;
+  --panel-soft: #f9fbff;
+  --border: #dbe4f2;
+  --text: #1b2a4a;
+  --muted: #63708a;
+  --primary: #3b82f6;
+  --primary-2: #2563eb;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --shadow: 0 14px 36px rgba(23, 44, 90, 0.09);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(900px 420px at 18% -12%, #d8e9ff 0%, transparent 60%),
+              radial-gradient(1000px 500px at 110% 0%, #e7f2ff 0%, transparent 50%),
+              var(--bg);
+  color: var(--text);
+}
+
+.container { max-width: 1180px; margin: 0 auto; padding: 28px; }
+.topbar {
+  position: sticky; top: 14px; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 18px; border: 1px solid var(--border);
+  border-radius: 14px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(8px);
+  box-shadow: var(--shadow);
+}
+.brand { font-weight: 800; letter-spacing: 0.3px; font-size: 15px; }
+.nav { display: flex; gap: 8px; }
+.nav a {
+  text-decoration: none; color: var(--muted); padding: 9px 13px; border-radius: 10px;
+  font-size: 14px; font-weight: 600;
+}
+.nav a:hover, .nav a.active { color: var(--text); background: #e9f1ff; }
+
+.hero {
+  margin-top: 20px; padding: 34px;
+  border: 1px solid var(--border); border-radius: 20px;
+  background: linear-gradient(155deg, #eef5ff 0%, #f7faff 50%, #ffffff 100%);
+  box-shadow: var(--shadow);
+}
+.hero h1 { margin: 0 0 10px; font-size: 36px; line-height: 1.15; }
+.hero p { margin: 0; color: var(--muted); font-size: 16px; max-width: 760px; line-height: 1.6; }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.pill {
+  border: 1px solid #cfe0fb; border-radius: 999px;
+  padding: 8px 12px; font-size: 12px; color: #2e5fae; background: #f3f8ff;
+}
+
+.grid { margin-top: 18px; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.card {
+  border: 1px solid var(--border); border-radius: 18px; padding: 20px;
+  background: linear-gradient(180deg, var(--panel-soft), var(--panel));
+  box-shadow: var(--shadow);
+}
+.card h3 { margin: 0 0 8px; font-size: 21px; }
+.card p { margin: 0 0 16px; color: var(--muted); line-height: 1.6; }
+.btn {
+  display: inline-block; border: 0; border-radius: 10px; cursor: pointer;
+  padding: 12px 16px; background: linear-gradient(180deg, var(--primary), var(--primary-2));
+  color: #fff; font-weight: 600; text-decoration: none;
+  box-shadow: 0 10px 24px rgba(74, 126, 240, 0.35);
+  transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(74, 126, 240, 0.45); filter: brightness(1.06); }
+
+.form-card { margin-top: 18px; }
+label { display: block; margin: 12px 0 8px; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.35px; color: #64748b; }
+input, select, textarea {
+  width: 100%; padding: 12px 13px; border-radius: 11px;
+  border: 1px solid #cdd9ec; background: #ffffff; color: var(--text);
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+input:focus, select:focus, textarea:focus { border-color: #93b7fb; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16); background: #ffffff; }
+textarea { min-height: 120px; resize: vertical; }
+.row { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+
+.status { margin-top: 12px; min-height: 22px; font-weight: 500; color: #9ac5ff; }
+.status.ok { color: var(--success); }
+.status.error { color: var(--danger); }
+audio, video { width: 100%; margin-top: 14px; border-radius: 12px; border: 1px solid #d5e0f1; background: #f8fbff; }
+
+.download-link { display: inline-block; margin-top: 12px; color: #2563eb; text-decoration: none; font-weight: 600; }
+.download-link:hover { color: #1d4ed8; }
+
+@media (max-width: 800px) {
+  .grid, .row { grid-template-columns: 1fr; }
+  .container { padding: 16px; }
+  .hero h1 { font-size: 30px; }
+}

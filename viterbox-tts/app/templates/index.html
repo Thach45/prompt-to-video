@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viterbox AI - Lồng tiếng video & TTS chuyên nghiệp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+      /* Hiệu ứng nền kẻ caro (Grid Background) đồng bộ */
+      background-image: 
+        linear-gradient(to right, rgba(203, 213, 225, 0.4) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(203, 213, 225, 0.4) 1px, transparent 1px);
+      background-size: 30px 30px;
+      color: #1e293b;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(226, 232, 240, 1);
+      box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.05);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-glow {
+      position: absolute;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      z-index: -1;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      transition: all 0.3s ease;
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body class="antialiased overflow-x-hidden">
+  <!-- Glow Background Effect -->
+  <div class="hero-glow"></div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <!-- Header -->
+    <header class="flex items-center justify-between py-6">
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+          </svg>
+        </div>
+        <span class="text-xl font-extrabold tracking-tight text-slate-900">Viterbox <span class="text-blue-600">AI</span></span>
+      </div>
+      
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-500">
+        <a href="/" class="text-blue-600 font-semibold">Trang chủ</a>
+        <a href="/tts-studio" class="hover:text-blue-600 transition-colors">Giọng nói AI</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="/login" class="text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors px-4 py-2">Đăng nhập</a>
+        <a href="/register" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold px-6 py-3 rounded-2xl shadow-lg shadow-blue-500/20 transition-all">Bắt đầu ngay</a>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-bold uppercase tracking-widest mb-8">
+        <span class="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
+        <span>Công nghệ lồng tiếng AI 2.0</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-slate-900 tracking-tight">
+        Lồng tiếng Video <br/>
+        <span class="gradient-text">Chuẩn Tiếng Việt</span>
+      </h1>
+      <p class="max-w-2xl mx-auto text-lg text-slate-500 leading-relaxed mb-12">
+        Tạo giọng nói tự nhiên từ văn bản và tự động dịch thuật, lồng tiếng video nước ngoài sang tiếng Việt chỉ trong vài giây với công nghệ AI hàng đầu.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+        <a href="/tts-studio" class="w-full sm:w-auto bg-slate-900 text-white font-bold px-8 py-4 rounded-2xl hover:bg-slate-800 transition-all shadow-xl flex items-center justify-center gap-2 group">
+          Bắt đầu tạo giọng nói ngay
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="mt-24 pt-10 border-t border-slate-200/60">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-8">Được tin dùng bởi hơn 10.000+ nhà sáng tạo</p>
+        <div class="flex flex-wrap justify-center gap-12 opacity-50 grayscale contrast-125">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" class="h-5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" class="h-5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix" class="h-5">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Microsoft_logo_%282012%29.svg" alt="Microsoft" class="h-5">
+        </div>
+      </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section class="py-20">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-slate-900 mb-4">Giải pháp AI toàn diện</h2>
+        <p class="text-slate-500">Mọi thứ bạn cần để sản xuất nội dung đa ngôn ngữ chuyên nghiệp</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Tool Card 1 -->
+        <article class="glass card-hover p-10 rounded-[2.5rem] relative overflow-hidden group">
+          <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl"></div>
+          
+          <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-8 shadow-inner border border-blue-200/50">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            </svg>
+          </div>
+          
+          <div class="inline-flex px-3 py-1 rounded-lg bg-blue-50 text-blue-600 text-[10px] font-bold uppercase tracking-widest mb-4">
+            Studio Pro
+          </div>
+          <h3 class="text-2xl font-bold mb-4 text-slate-900">Phòng thu giọng nói AI</h3>
+          <p class="text-slate-500 mb-10 leading-relaxed">
+            Chuyển văn bản thành giọng nói với hàng trăm lựa chọn giọng mẫu, điều chỉnh cảm xúc, tốc độ và ngữ điệu chuẩn xác như người thật.
+          </p>
+          <a class="inline-flex items-center gap-2 text-blue-600 font-bold hover:gap-3 transition-all" href="/tts-studio">
+            Bắt đầu tạo audio
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="mt-20 py-12 border-t border-slate-200/60 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2 opacity-60">
+        <div class="w-6 h-6 bg-slate-400 rounded-md"></div>
+        <span class="text-xs font-bold uppercase tracking-widest">Viterbox AI</span>
+      </div>
+      <div class="text-slate-400 text-xs">
+        &copy; 2024 Viterbox AI Studio. Tất cả bản quyền được bảo lưu.
+      </div>
+      <div class="flex gap-8 text-slate-500 text-xs font-medium">
+        <a href="#" class="hover:text-blue-600 transition-colors">Điều khoản</a>
+        <a href="#" class="hover:text-blue-600 transition-colors">Bảo mật</a>
+        <a href="#" class="hover:text-blue-600 transition-colors">Cộng đồng</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

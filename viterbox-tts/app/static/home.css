@@ -1,0 +1,132 @@
+body {
+  margin: 0;
+  font-family: "Be Vietnam Pro", "Inter", Arial, sans-serif;
+  background: #f6f8fc;
+  color: #1f2937;
+}
+
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  background: #ffffff;
+  border: 1px solid #e5eaf3;
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 17px;
+  color: #0f172a;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #475569;
+  margin-left: 14px;
+  font-weight: 600;
+}
+
+.hero {
+  margin-top: 18px;
+  border-radius: 22px;
+  background: linear-gradient(120deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  padding: 40px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.15;
+}
+
+.hero p {
+  margin: 14px 0 0;
+  max-width: 760px;
+  color: #dbeafe;
+  font-size: 17px;
+}
+
+.hero-action {
+  margin-top: 22px;
+  display: flex;
+  gap: 10px;
+}
+
+.hero-btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.hero-btn.primary {
+  background: #ffffff;
+  color: #1e40af;
+}
+
+.hero-btn.secondary {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.section-title {
+  margin-top: 26px;
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5eaf3;
+  border-radius: 16px;
+  padding: 22px;
+}
+
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 22px;
+}
+
+.card p {
+  margin: 0 0 16px;
+  color: #64748b;
+  line-height: 1.55;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.btn {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: #fff;
+  background: #2563eb;
+  font-weight: 700;
+}

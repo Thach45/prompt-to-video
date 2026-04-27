@@ -1,0 +1,1 @@
+"""Viterbox FastAPI package."""
