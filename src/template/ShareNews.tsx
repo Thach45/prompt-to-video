@@ -16,7 +16,7 @@ import {
   BarChart3, ListChecks, Play, Heart, Share2, TrendingUp,
   BrainCircuit, Users, Sun, Coffee, BookOpen, Star
 } from "lucide-react";
-import { WordLevelSubtitles } from "@/components/WordLevelSubtitles";
+import { WordLevelSubtitles } from "../components/WordLevelSubtitles";
 
 // --- TYPES ---
 export type MediaType = "icon" | "image" | "chart" | "list";

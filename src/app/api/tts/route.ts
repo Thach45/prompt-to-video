@@ -1,4 +1,7 @@
 import { UniversalEdgeTTS } from "edge-tts-universal";
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
@@ -10,14 +13,27 @@ export async function POST(request: Request) {
       return Response.json({ error: "Text is required" }, { status: 400 });
     }
 
+    // Create a hash of text and voice to avoid redundant generation
+    const hash = crypto.createHash("md5").update(text + voice).digest("hex");
+    const fileName = `${hash}.mp3`;
+    const publicPath = path.join(process.cwd(), "public", "audio-cache");
+    const filePath = path.join(publicPath, fileName);
+    const publicUrl = `/audio-cache/${fileName}`;
+
+    // Ensure directory exists
+    if (!fs.existsSync(publicPath)) {
+      fs.mkdirSync(publicPath, { recursive: true });
+    }
+
     const tts = new UniversalEdgeTTS(text, voice);
     const result = await tts.synthesize();
 
-    const arrayBuffer = await result.audio.arrayBuffer();
-    const base64Audio = Buffer.from(arrayBuffer).toString("base64");
+    // Save to public folder
+    const buffer = Buffer.from(await result.audio.arrayBuffer());
+    fs.writeFileSync(filePath, buffer);
 
     return Response.json({
-      audioBase64: base64Audio,
+      url: publicUrl,
       subtitles: result.subtitle,
     });
   } catch (error) {

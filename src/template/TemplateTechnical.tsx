@@ -16,7 +16,7 @@ import {
   BrainCircuit, Users, Sun, Coffee, BookOpen, Star,
   Bot, Cpu, Terminal, Code, Network, Database, ChevronRight, Lock, Fingerprint
 } from "lucide-react";
-import { WordLevelSubtitles } from "@/components/WordLevelSubtitles";
+import { WordLevelSubtitles } from "../components/WordLevelSubtitles";
 
 // --- TYPES ---
 export type MediaType = "icon" | "image" | "chart" | "list";

@@ -44,6 +44,7 @@ const TEMPLATE_OPTIONS: TemplateOption[] = [
 const VOICE_OPTIONS = [
   { id: "vi-VN-HoaiMyNeural", label: "Hoài My (Nữ)", gender: "female" },
   { id: "vi-VN-NamMinhNeural", label: "Nam Minh (Nam)", gender: "male" },
+  { id: "local-nhat-phong", label: "Nhật Phong (Local AI)", gender: "male" },
   { id: "en-US-EmmaMultilingualNeural", label: "Emma (English)", gender: "female" },
 ];
 
@@ -77,6 +78,8 @@ export default function StudioPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelection>("auto");
   const [selectedVoice, setSelectedVoice] = useState(VOICE_OPTIONS[0].id);
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [isRendering, setIsRendering] = useState(false);
+  const [renderUrl, setRenderUrl] = useState<string | null>(null);
   const PreviewComponent =
     videoSpec.templateId === "technical" ? TemplateTechnical : ShortVideoTemplate;
   const selectedTemplateOption =
@@ -205,9 +208,13 @@ export default function StudioPage() {
           while (!success && retries > 0) {
             try {
               // Thêm delay nhỏ giữa các request để tránh rate limit của Edge TTS
-              if (i > 0) await sleep(3000); 
+              const isLocal = selectedVoice === "local-nhat-phong";
+              const endpoint = isLocal ? "/api/local-tts" : "/api/tts";
+              
+              // Local TTS không cần delay lâu như Edge TTS
+              if (i > 0) await sleep(isLocal ? 500 : 3000); 
 
-              const ttsResponse = await fetch("/api/tts", {
+              const ttsResponse = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ text: scene.voiceover, voice: selectedVoice }),
@@ -215,24 +222,14 @@ export default function StudioPage() {
               
               if (ttsResponse.ok) {
                 const responseData = await ttsResponse.json();
-                const { audioBase64, subtitles } = responseData;
+                const { url, subtitles } = responseData;
                 
-                // Decode Base64 to Blob
-                const byteCharacters = atob(audioBase64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let j = 0; j < byteCharacters.length; j++) {
-                  byteNumbers[j] = byteCharacters.charCodeAt(j);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: "audio/mpeg" });
-                
-                const audioUrl = URL.createObjectURL(blob);
-                const duration = await getAudioDuration(audioUrl);
+                const duration = await getAudioDuration(url);
                 
                 if (duration > 0) {
                   updatedScenes[i] = {
                     ...scene,
-                    audioUrl,
+                    audioUrl: url,
                     subtitles,
                     durationSec: Math.max(3, Math.round((duration + 0.5) * 10) / 10), // Padding 0.5s
                   };
@@ -283,6 +280,34 @@ export default function StudioPage() {
     } finally {
       setIsGenerating(false);
       setStreamStatus("Dang cho...");
+    }
+  };
+
+  const handleRender = async () => {
+    if (!videoSpec) return;
+    
+    setIsRendering(true);
+    setErrorMessage(null);
+    setRenderUrl(null);
+    
+    try {
+      const response = await fetch("/api/render", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoSpec }),
+      });
+      
+      const data = await response.json();
+      if (data.url) {
+        setRenderUrl(data.url);
+      } else {
+        setErrorMessage(data.error || "Render thất bại.");
+      }
+    } catch (error) {
+      console.error("Render error:", error);
+      setErrorMessage("Lỗi kết nối khi render video.");
+    } finally {
+      setIsRendering(false);
     }
   };
 
@@ -424,23 +449,48 @@ export default function StudioPage() {
             </button>
           </div>
 
-          {tab === "code" && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleApplyJson}
-                className="rounded-md bg-black px-3 py-1.5 text-[12px] font-medium text-white transition hover:opacity-90"
-              >
-                Apply
-              </button>
-              <button
-                onClick={handleCopy}
-                className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-gray-600 hover:bg-gray-100 transition-colors"
-              >
-                {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
-                {copied ? "Đã chép" : "Sao chép"}
-              </button>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {tab === "code" && (
+              <>
+                <button
+                  onClick={handleApplyJson}
+                  className="rounded-md bg-black px-3 py-1.5 text-[12px] font-medium text-white transition hover:opacity-90"
+                >
+                  Apply
+                </button>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+                >
+                  {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
+                  {copied ? "Đã chép" : "Sao chép"}
+                </button>
+              </>
+            )}
+            
+            {hasGenerated && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleRender}
+                  disabled={isRendering}
+                  className="flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  {isRendering ? <Loader2 size={14} className="animate-spin" /> : <Video size={14} />}
+                  {isRendering ? "Đang Render..." : renderUrl ? "Render Lại" : "Render MP4"}
+                </button>
+                
+                {renderUrl && (
+                  <a
+                    href={renderUrl}
+                    download
+                    className="flex items-center gap-1.5 rounded-md bg-green-600 px-3 py-1.5 text-[12px] font-medium text-white transition hover:bg-green-700 animate-in fade-in zoom-in duration-300"
+                  >
+                    <Copy size={14} /> Tải Video
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex-1 relative overflow-hidden bg-white">
@@ -562,6 +612,34 @@ export default function StudioPage() {
                   <div className="mt-1 text-[11px] text-gray-500">{option.description}</div>
                 </button>
               ))}
+              <button
+                onClick={handleRender}
+                disabled={isGenerating || isRendering || !hasGenerated}
+                className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20"
+              >
+                {isRendering ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Đang Render...
+                  </>
+                ) : (
+                  <>
+                    <Video className="w-5 h-5" />
+                    Render MP4
+                  </>
+                )}
+              </button>
+
+              {renderUrl && (
+                <a
+                  href={renderUrl}
+                  download
+                  className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-green-500/20"
+                >
+                  <Copy className="w-5 h-5" />
+                  Tải Video
+                </a>
+              )}
             </div>
           </div>
         </div>
