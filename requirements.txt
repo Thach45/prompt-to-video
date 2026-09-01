@@ -1,0 +1,28 @@
+# Python dependencies for the remotion-video skill.
+#   pip install -r requirements.txt
+#
+# System requirement (not installable via pip): ffmpeg + ffprobe
+#   macOS:  brew install ffmpeg
+#   Debian: sudo apt install ffmpeg
+
+# --- Captions & speech cues (scripts/align_captions.py) ---
+faster-whisper>=1.0        # preferred backend
+# openai-whisper           # alternative, slower; either one works
+
+# --- Preview labelling (scripts/preview.py) ---
+# Optional: only needed when your ffmpeg build lacks the drawtext filter
+# (i.e. was compiled without libfreetype). Without it the contact sheet still
+# renders, just without burnt-in labels.
+pillow>=10.0
+
+# --- TTS: install at least one ---
+
+# Local, free, Vietnamese + English, instant voice cloning (Apache 2.0)
+# CPU/macOS works torch-free via ONNX. Recommended for Vietnamese.
+vieneu
+
+# Cloud, free, preset voices only
+edge-tts
+
+# Cloud, paid — also needs MINIMAX_API_KEY and MINIMAX_VOICE_ID in the env
+requests

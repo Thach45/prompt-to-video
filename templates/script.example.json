@@ -1,0 +1,74 @@
+{
+  "compositionId": "Main",
+  "fps": 30,
+  "lang": "vi",
+
+  "voice": {
+    "provider": "auto",
+
+    "vieneu": {
+      "mode": "v3turbo",
+
+      "_comment_default": "Mặc định của skill: giọng clone sẵn 'Nhật Phong' từ templates/voices/nhat-phong.wav (nam, tường thuật). Xoá ref_audio/clone_name bên dưới để quay lại dùng giọng preset qua 'voice'.",
+      "ref_audio": "voices/nhat-phong.wav",
+      "clone_name": "Nhật Phong",
+      "denoise": true,
+
+      "_comment_preset": "Muốn dùng giọng preset thay vì clone: xoá 3 dòng ref_audio/clone_name/denoise ở trên, rồi bỏ dấu _ dưới đây.",
+      "_voice": "Adam",
+      "_help": "Chạy `python scripts/generate_audio.py --list-voices` để in danh sách giọng thật của bản đã cài.",
+      "_voices_v3turbo_bac": ["Minh Đức", "Phạm Tuyên", "Thanh Bình", "Trúc Ly", "Ngọc Linh", "Đoan Trang", "Mai Anh", "Quỳnh Anh", "Ngọc Huyền"],
+      "_voices_v3turbo_trung": ["Quang Sơn", "Ngọc Trân"],
+      "_voices_v3turbo_nam": ["Adam", "Thái Sơn", "Xuân Vĩnh", "Minh Triết", "Thục Đoan", "Thùy Dung", "Mỹ Duyên", "Đức Trí", "Kim Thanh"],
+      "_note_mode": "mode 'standard' dùng bộ giọng khác hẳn (6 giọng, id không dấu: Binh/Tuyen/Vinh/Doan/Ly/Ngoc).",
+
+      "_comment_clone_other": "Muốn clone giọng khác thay vì Nhật Phong: đổi ref_audio ở trên trỏ tới clip 3-8 giây khác.",
+
+      "_comment_infer": "Tham số truyền thẳng cho engine.infer(); apply_watermark mặc định true",
+      "_infer": { "temperature": 0.8, "top_k": 25, "apply_watermark": true }
+    },
+
+    "minimax": {
+      "model": "speech-02-hd",
+      "region": "global",
+      "speed": 1.0
+    },
+
+    "edge": {
+      "voice": "vi-VN-NamMinhNeural",
+      "rate": "+0%"
+    }
+  },
+
+  "scenes": [
+    {
+      "id": "01-intro",
+      "title": "Đặt vấn đề",
+      "text": "Bạn nhìn vào đây và biết ngay đó là số bảy. Nhưng bạn có mô tả được mình đã làm điều đó thế nào không?",
+      "cues": {
+        "digit": "số bảy",
+        "question": "mô tả được"
+      }
+    },
+    {
+      "id": "02-pixels",
+      "title": "Máy tính thấy gì",
+      "text": "Máy tính không thấy hình. Nó thấy bảy trăm tám mươi tư con số, mỗi con số là độ sáng của một pixel.",
+      "cues": {
+        "grid": "bảy trăm",
+        "brightness": "độ sáng"
+      }
+    },
+    {
+      "id": "03-conv",
+      "title": "Phép tích chập",
+      "text": "Cửa sổ này phủ lên chín pixel. Ta nhân từng pixel với trọng số tương ứng, rồi cộng tất cả lại. Con số thu được ghi vào ô tương ứng của bản đồ đặc trưng.",
+      "cues": {
+        "window": "Cửa sổ này",
+        "multiply": "nhân từng pixel",
+        "sum": "cộng tất cả",
+        "writeOut": "ghi vào ô"
+      }
+    }
+  ]
+}
