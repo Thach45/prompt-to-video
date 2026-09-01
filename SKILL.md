@@ -1,66 +1,68 @@
 ---
 name: remotion-video
 description: |
-  使用 Remotion 框架以编程方式创建视频。用 React 组件定义画面，配 AI 配音，
-  自动生成帧级对齐的字幕，并在渲染前抽帧预览自检。
-  触发词：
+  Create videos programmatically with the Remotion framework. Define scenes with React
+  components, add AI narration, auto-generate frame-accurate captions, and self-review
+  with rendered stills before committing to a full render.
+  Trigger phrases:
+  - "make a video with code", "programmatic video", "React video", "AI narrated video", "auto captions"
   - "用代码做视频"、"编程视频"、"React 视频"、"AI 配音视频"、"自动字幕"
   - "làm video bằng code"、"video giải thích"、"lồng tiếng AI"、"phụ đề tự động"
   - "Remotion"、"remotion"、"VieNeu"
   - "/remotion-video"
-  适用场景：
-  - 程序化视频：(1) 批量生成 (2) 数据驱动（如年度总结）(3) 音乐可视化 (4) 自动字幕
-  - 教程讲解视频：(5) 技术概念可视化（如 CNN、算法）(6) 分层递进讲解 (7) AI 配音教程
-  - 3D 视频：(8) 产品展示/模型动画 (9) 卡通角色讲解 (10) 3D 数据可视化 (11) Logo 动画
-  内置能力：
-  - 三种 TTS：VieNeu-TTS（本地/越南语/可克隆音色）、MiniMax（云端/中文）、Edge TTS（免费兜底）
-  - Whisper 强制对齐 → 拼写正确的字幕 + 可驱动动画的语音锚点（cue）
-  - 抽帧预览循环：渲染前先出图肉眼检查，避免盲写
+  Use cases:
+  - Programmatic video: (1) batch generation (2) data-driven (e.g. year-in-review) (3) music visualization (4) auto captions
+  - Tutorial/explainer video: (5) visualizing technical concepts (CNNs, algorithms) (6) layered step-by-step explanation (7) AI-narrated tutorials
+  - 3D video: (8) product showcase / model animation (9) cartoon character explainer (10) 3D data visualization (11) logo animation
+  Built-in capabilities:
+  - Three TTS backends: VieNeu-TTS (local / Vietnamese / voice cloning), MiniMax (cloud / Chinese), Edge TTS (free fallback)
+  - Whisper forced alignment → correctly spelled captions + speech cues that drive animation
+  - Preview loop: render stills and actually look at them before committing to a full render
 ---
 
 # Remotion Video
 
-用 React 以编程方式创建 MP4 视频的框架。
+A framework for creating MP4 videos programmatically with React.
 
-## 核心概念
+## Core Concepts
 
-1. **Composition** - 视频的定义（尺寸、帧率、时长）
-2. **useCurrentFrame()** - 获取当前帧号，驱动动画
-3. **interpolate()** - 将帧号映射到任意值（位置、透明度等）
-4. **spring()** - 物理动画效果
-5. **<Sequence>** - 时间轴上排列组件
+1. **Composition** - the video's definition (dimensions, frame rate, duration)
+2. **useCurrentFrame()** - get the current frame number, drives animation
+3. **interpolate()** - map a frame number to any value (position, opacity, etc.)
+4. **spring()** - physics-based animation
+5. **<Sequence>** - arrange components along the timeline
 
-## 快速开始
+## Quick Start
 
-### 创建新项目
+### Create a new project
 
 ```bash
 npx create-video@latest
 ```
 
-选择模板后：
+After picking a template:
 
 ```bash
 cd <project-name>
-npm run dev  # 启动 Remotion Studio 预览
+npm run dev  # launch Remotion Studio preview
 ```
 
-### 项目结构
+### Project structure
 
 ```
 my-video/
 ├── src/
-│   ├── Root.tsx           # 注册所有 Composition
-│   ├── HelloWorld.tsx     # 视频组件
-│   └── index.ts           # 入口
-├── public/                # 静态资源（音频、图片）
-├── remotion.config.ts     # 配置文件
+│   ├── Root.tsx           # registers all Compositions
+│   ├── HelloWorld.tsx     # video component
+│   └── index.ts           # entry point
+├── public/                # static assets (audio, images)
+├── remotion.config.ts     # config file
 └── package.json
 ```
 
-## 基础组件示例
+## Basic Component Examples
 
-### 最小视频组件
+### Minimal video component
 
 ```tsx
 import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
@@ -77,7 +79,7 @@ export const MyVideo = () => {
 };
 ```
 
-### 注册 Composition
+### Registering a Composition
 
 ```tsx
 // Root.tsx
@@ -89,7 +91,7 @@ export const RemotionRoot = () => {
     <Composition
       id="MyVideo"
       component={MyVideo}
-      durationInFrames={150}  // 5秒 @ 30fps
+      durationInFrames={150}  // 5s @ 30fps
       fps={30}
       width={1920}
       height={1080}
@@ -98,25 +100,25 @@ export const RemotionRoot = () => {
 };
 ```
 
-## 动画技巧
+## Animation Techniques
 
-### interpolate - 值映射
+### interpolate - value mapping
 
 ```tsx
 import { interpolate, useCurrentFrame } from "remotion";
 
 const frame = useCurrentFrame();
 
-// 0-30帧：透明度 0→1
+// frames 0-30: opacity 0→1
 const opacity = interpolate(frame, [0, 30], [0, 1], {
-  extrapolateRight: "clamp",  // 超出范围时钳制
+  extrapolateRight: "clamp",  // clamp when out of range
 });
 
-// 位移动画
+// translation animation
 const translateY = interpolate(frame, [0, 30], [50, 0]);
 ```
 
-### spring - 物理动画
+### spring - physics-based animation
 
 ```tsx
 import { spring, useCurrentFrame, useVideoConfig } from "remotion";
@@ -131,7 +133,7 @@ const scale = spring({
 });
 ```
 
-### Sequence - 时间编排
+### Sequence - timeline arrangement
 
 ```tsx
 import { Sequence } from "remotion";
@@ -149,21 +151,22 @@ import { Sequence } from "remotion";
 </>
 ```
 
-## 配音、字幕与预览（核心工作流）
+## Narration, Captions & Preview (Core Workflow)
 
-三个脚本，一条流水线。**唯一数据源是项目根目录的 `script.json`**，其余全部自动生成。
+Three scripts, one pipeline. **The only source of truth is `script.json`** at the project
+root — everything else is generated.
 
 ```
 script.json  ──generate_audio.py──▶  public/audio/*.mp3
                                      src/generated/audioConfig.ts
-             ──align_captions.py──▶  src/generated/captions.ts   （字幕 + cue）
-             ──preview.py─────────▶  out/preview/*.png           （渲染前肉眼检查）
+             ──align_captions.py──▶  src/generated/captions.ts   (captions + cues)
+             ──preview.py─────────▶  out/preview/*.png           (look before you render)
 ```
 
 ```bash
-python scripts/generate_audio.py     # 1. 配音（增量，内容变了才重新生成）
-python scripts/align_captions.py     # 2. 字幕对齐 + 语音锚点
-python scripts/preview.py            # 3. 抽帧预览 —— 渲染前必做
+python scripts/generate_audio.py     # 1. narration (incremental — only regenerates changed content)
+python scripts/align_captions.py     # 2. caption alignment + speech cues
+python scripts/preview.py            # 3. sparse-frame preview — do this before every render
 npx remotion render Main out/video.mp4
 ```
 
@@ -178,19 +181,19 @@ npx remotion render Main out/video.mp4
   "scenes": [
     {
       "id": "03-conv",
-      "title": "卷积",
-      "text": "这个窗口覆盖了九个像素。我们把每个像素和对应的权重相乘，再全部加起来。",
-      "cues": { "window": "这个窗口", "multiply": "相乘", "sum": "加起来" }
+      "title": "Convolution",
+      "text": "This window covers nine pixels. We multiply each pixel by its matching weight, then add everything up.",
+      "cues": { "window": "This window", "multiply": "multiply", "sum": "add everything" }
     }
   ]
 }
 ```
 
-- `text` —— 解说词，也是字幕文字的来源（拼写永远正确）
-- `cues` —— 给动画用的**语音锚点**：`名字 → 台词里的一个短语`
-- 每个场景可加 `"voice": "..."` 覆盖音色，用于多角色对话
+- `text` — the narration, and also the source of the caption text (always spelled correctly)
+- `cues` — **speech anchors** for animation: `name → a phrase in the narration`
+- Each scene can add `"voice": "..."` to override the voice, for multi-character dialogue
 
-从模板开始：
+Start from the template:
 
 ```bash
 cp templates/script.example.json script.json
@@ -198,174 +201,178 @@ cp templates/src/useCue.ts templates/src/Captions.tsx src/
 mkdir -p voices && cp templates/voices/nhat-phong.wav voices/
 ```
 
-模板里的默认配音已经是克隆音色 —— `templates/voices/nhat-phong.wav`
-（男声、叙述风格），`script.example.json` 里对应 `ref_audio` + `clone_name`。
-不改任何东西直接跑 `generate_audio.py` 就能听到这个声音。
-想换回内置预设音色，看 `script.example.json` 里 `_comment_preset` 那段注释。
+The template's default narration is already a cloned voice — `templates/voices/nhat-phong.wav`
+(male, narrative style), wired up via `ref_audio` + `clone_name` in `script.example.json`.
+Run `generate_audio.py` with no changes and you'll hear this voice immediately.
+To switch back to a built-in preset voice, see the `_comment_preset` block in `script.example.json`.
 
 ---
 
-### TTS 方案对比
+### TTS Options Compared
 
-| 方案 | 语言 | 音色克隆 | 费用 | 硬件 | 推荐度 |
+| Option | Language | Voice Cloning | Cost | Hardware | Recommendation |
 |------|------|----------|------|------|--------|
-| **VieNeu-TTS** | 越南语 / 英语 | ✅ 3–8 秒样本即时克隆 | 免费（Apache 2.0） | CPU 即可，Apple Silicon 约 7× 实时 | ⭐⭐⭐ 越南语首选 |
-| **MiniMax TTS** | 中文等多语言 | ✅ 云端克隆 | 按字符计费 | 无（云端） | ⭐⭐⭐ 中文首选 |
-| **Edge TTS** | 多语言 | ❌ 固定音色 | 免费 | 无（云端） | ⭐⭐ 兜底 |
+| **VieNeu-TTS** | Vietnamese / English | ✅ instant clone from a 3–8s sample | Free (Apache 2.0) | CPU is enough; ~7× realtime on Apple Silicon | ⭐⭐⭐ first choice for Vietnamese |
+| **MiniMax TTS** | Chinese + many others | ✅ cloud cloning | Billed per character | None (cloud) | ⭐⭐⭐ first choice for Chinese |
+| **Edge TTS** | Many languages | ❌ fixed voices | Free | None (cloud) | ⭐⭐ fallback |
 
-> 模板默认配的就是 VieNeu 克隆音色（见上），不用额外配置就能出声。
+> The template is already configured with a VieNeu cloned voice (above) — no extra setup needed to hear it.
 
-`"provider": "auto"` 会按机器上**实际可用**的情况自动挑选：
+`"provider": "auto"` picks a backend based on what's **actually available** on the machine:
 
 ```
-lang 是 vi / en  →  vieneu → minimax → edge
-其他语言          →  minimax → edge          （VieNeu 只支持越/英）
+lang is vi / en   →  vieneu → minimax → edge
+other languages    →  minimax → edge          (VieNeu only supports Vietnamese/English)
 ```
 
-也可强制指定：`python scripts/generate_audio.py --provider edge`
+You can also force a specific one: `python scripts/generate_audio.py --provider edge`
 
-#### VieNeu-TTS（本地，越南语）
+#### VieNeu-TTS (local, Vietnamese)
 
 ```bash
 pip install vieneu          # CPU / macOS
-# GPU：先装 PyTorch(CUDA≥12.8)，再 pip install vieneu
+# GPU: install PyTorch (CUDA>=12.8) first, then pip install vieneu
 ```
 
-**⚠️ 音色 ID 取决于 `mode`**，两套音色完全不同：
+**⚠️ Voice IDs depend on `mode`** — the two voice sets are completely different:
 
-| mode | 采样率 | 音色数 | ID 形式 | 默认 |
+| mode | Sample rate | # voices | ID format | Default |
 |------|--------|--------|---------|------|
-| `v3turbo`（默认） | 48 kHz | 20 | **带声调符号**，如 `"Phạm Tuyên"` | `Adam` |
-| `standard` | 24 kHz | 6 | 无声调，如 `"Tuyen"` | `Binh` |
+| `v3turbo` (default) | 48 kHz | 20 | **carries tone marks**, e.g. `"Phạm Tuyên"` | `Adam` |
+| `standard` | 24 kHz | 6 | no tone marks, e.g. `"Tuyen"` | `Binh` |
 
-别照抄文档里的名字，**直接问引擎**：
+Don't copy voice names from docs — **ask the engine directly**:
 
 ```bash
 python scripts/generate_audio.py --list-voices
 ```
 
-v3turbo 的 20 个音色按口音分：
+The 20 v3turbo voices, grouped by accent:
 
-- **北部**：Minh Đức、Phạm Tuyên、Thanh Bình、Trúc Ly、Ngọc Linh、Đoan Trang、Mai Anh、Quỳnh Anh、Ngọc Huyền
-- **中部**：Quang Sơn、Ngọc Trân
-- **南部**：Adam、Thái Sơn、Xuân Vĩnh、Minh Triết、Thục Đoan、Thùy Dung、Mỹ Duyên、Đức Trí、Kim Thanh
+- **Northern**: Minh Đức, Phạm Tuyên, Thanh Bình, Trúc Ly, Ngọc Linh, Đoan Trang, Mai Anh, Quỳnh Anh, Ngọc Huyền
+- **Central**: Quang Sơn, Ngọc Trân
+- **Southern**: Adam, Thái Sơn, Xuân Vĩnh, Minh Triết, Thục Đoan, Thùy Dung, Mỹ Duyên, Đức Trí, Kim Thanh
 
-其它要点：
+Other things worth knowing:
 
-- **克隆音色**：`"ref_audio": "voices/me.wav"`（3–8 秒干净人声）+ 可选 `"clone_name"`。
-  脚本只在启动时 `add_voice()` 注册一次，不会每个场景重新编码参考音频。
-  `mode: "standard"` 的克隆还需要参考音频的文字稿（`infer` 的 `ref_text`）；
-  默认的 `v3turbo` 用 ref codes，不需要。
-- **默认带水印**：`infer(apply_watermark=True)` 是默认值。要改就写
-  `"infer": { "apply_watermark": false }`，并自行确认符合该项目的许可与伦理要求。
-- 支持情感标记（实验性）：`[cười]` 笑、`[thở dài]` 叹气、`[hắng giọng]` 清嗓
-- 支持越英混说（code-switching），讲技术内容时英文术语不会读错
-- 输出 wav（numpy float32），脚本自动转成 mp3 以减小 `public/` 体积
-- 引擎参数直接透传：`backend`（auto/onnx/pytorch）、`device`、`precision`（int8/fp32）、
-  `threads`；推理参数写在 `"infer": {...}` 里
-- 仓库：https://github.com/pnnbao97/VieNeu-TTS
+- **Voice cloning**: `"ref_audio": "voices/me.wav"` (3–8s of clean speech) + optional `"clone_name"`.
+  The script calls `add_voice()` once at startup and reuses it — it does not re-encode the
+  reference clip per scene. Cloning under `mode: "standard"` also needs a transcript of the
+  reference audio (`infer`'s `ref_text`); the default `v3turbo` uses ref codes and doesn't need one.
+- **Watermarking is on by default**: `infer(apply_watermark=True)` is the default. To turn it
+  off, set `"infer": { "apply_watermark": false }` — and make sure that's consistent with the
+  license and ethics requirements of your project.
+- Experimental emotion tags: `[cười]` laugh, `[thở dài]` sigh, `[hắng giọng]` throat-clear
+- Supports Vietnamese/English code-switching, so English technical terms aren't mispronounced
+- Outputs wav (numpy float32); the script auto-converts to mp3 to keep `public/` small
+- Engine parameters pass straight through: `backend` (auto/onnx/pytorch), `device`, `precision`
+  (int8/fp32), `threads`; inference parameters go in `"infer": {...}`
+- Repo: https://github.com/pnnbao97/VieNeu-TTS
 
-#### MiniMax TTS（云端，中文）
+#### MiniMax TTS (cloud, Chinese)
 
 ```bash
 export MINIMAX_API_KEY="..."
 export MINIMAX_VOICE_ID="..."
 ```
 
-| 版本 | API 域名 |
+| Region | API host |
 |------|----------|
-| 国际版 | `api.minimax.io`（`"region": "global"`，默认） |
-| 国内版 | `api.minimaxi.com`（`"region": "cn"`） |
+| Global | `api.minimax.io` (`"region": "global"`, default) |
+| China | `api.minimaxi.com` (`"region": "cn"`) |
 
-**⚠️ `api.minimax.chat` 是错误域名**，会返回 "invalid api key"。
+**⚠️ `api.minimax.chat` is the wrong host** — it returns "invalid api key".
 
-价格：`speech-02-hd` ¥0.1/千字符，`speech-02-turbo` ¥0.05/千字符。
-先用 `--dry-run` 看一眼预估花费再跑。
+Pricing: `speech-02-hd` ¥0.1/1000 chars, `speech-02-turbo` ¥0.05/1000 chars.
+Run `--dry-run` first to see the estimated cost before spending anything.
 
-#### Edge TTS（云端，免费兜底）
+#### Edge TTS (cloud, free fallback)
 
 ```bash
 pip install edge-tts
 ```
 
-| 语音 ID | 语言 | 风格 |
+| Voice ID | Language | Style |
 |---------|------|------|
-| vi-VN-NamMinhNeural | 越南语 | 男声（默认） |
-| vi-VN-HoaiMyNeural | 越南语 | 女声 |
-| zh-CN-YunyangNeural | 中文 | 专业播音腔 |
-| zh-CN-XiaoxiaoNeural | 中文 | 温暖自然 |
-| en-US-AndrewNeural | 英语 | 自然男声 |
+| vi-VN-NamMinhNeural | Vietnamese | male (default) |
+| vi-VN-HoaiMyNeural | Vietnamese | female |
+| zh-CN-YunyangNeural | Chinese | professional broadcast |
+| zh-CN-XiaoxiaoNeural | Chinese | warm and natural |
+| en-US-AndrewNeural | English | natural male |
 
 ---
 
-### 增量生成（断点续作）
+### Incremental Generation (Resume)
 
-`generate_audio.py` 用 `public/audio/.manifest.json` 记录每个场景的
-**文本内容哈希 + 音色签名**。只有下面这些情况会重新生成：
+`generate_audio.py` tracks each scene's **content hash + voice signature** in
+`public/audio/.manifest.json`. A scene only regenerates when:
 
-- 改了 `text`
-- 换了音色 / 换了 provider
-- 音频文件被删了
+- `text` changed
+- the voice / provider changed
+- the audio file was deleted
 
 ```bash
-python scripts/generate_audio.py --only 03-conv   # 只重做一个场景
-python scripts/generate_audio.py --force          # 全部重做
-python scripts/generate_audio.py --dry-run        # 只看计划和预估费用
+python scripts/generate_audio.py --only 03-conv   # redo just one scene
+python scripts/generate_audio.py --force          # redo everything
+python scripts/generate_audio.py --dry-run        # just show the plan and cost estimate
 ```
 
-> **⚠️ 这是老版本的一个真实 bug**：旧脚本只判断「mp3 文件在不在」。
-> 改完解说词再跑，它会**默默保留旧音频**，画面和声音就此对不上。
-> 现在按内容哈希判断，改了词一定重新生成。
+> **⚠️ This is a real bug from the old version**: the previous script only checked
+> "does the mp3 file exist". Edit the narration and rerun, and it would **silently keep
+> the stale audio**, permanently desyncing picture and sound. It now hashes content, so
+> editing the text always triggers a regeneration.
 
 ---
 
-## 字幕与语音锚点（Cue）
+## Captions and Speech Cues
 
-### 为什么不直接用 Whisper 转写
+### Why not just transcribe with Whisper
 
-我们**本来就知道说了什么**——解说词是自己写的。Whisper 擅长判断
-「某个词在第几秒被说出」，但它写出来的字经常不对：越南语声调符号、
-「二十」写成「20」、中英混说时的拼写。
+We **already know what was said** — we wrote the narration ourselves. Whisper is good at
+figuring out *when* a word was spoken, but what it writes down is often wrong: Vietnamese
+tone marks, "twenty" transcribed as "20", spelling of code-switched English terms.
 
-所以 `align_captions.py` 做的是**强制对齐**：
+So `align_captions.py` does **forced alignment** instead:
 
 ```
-时间戳 ← Whisper
-文字   ← script.json
-        ↓
-两个序列做 difflib 对齐，Whisper 漏掉的词用邻居的时间线性插值
+timestamps ← Whisper
+wording    ← script.json
+             ↓
+the two sequences are aligned with difflib; anything Whisper missed is
+linearly interpolated from its neighbors' timing
 ```
 
-结果：字幕拼写永远正确，且每个词都有帧级时间。
+Result: captions are always spelled correctly, and every word has a frame-accurate timestamp.
 
 ```bash
-pip install faster-whisper            # 推荐，比 openai-whisper 快很多
+pip install faster-whisper            # recommended, much faster than openai-whisper
 python scripts/align_captions.py
-python scripts/align_captions.py --model small   # 更快，精度略低
+python scripts/align_captions.py --model small   # faster, slightly less accurate
 ```
 
-生成的 `src/generated/captions.ts` 里，**所有帧号都是场景内相对帧**，
-和 `<Sequence>` 里 `useCurrentFrame()` 的语义一致。
+In the generated `src/generated/captions.ts`, **every frame number is scene-relative**,
+matching the semantics of `useCurrentFrame()` inside a `<Sequence>`.
 
-### 显示字幕
+### Rendering captions
 
 ```tsx
 import { CaptionsTrack } from "./Captions";
 
-// 根组件里放一次，自动覆盖所有场景
+// drop it once at the root — covers every scene automatically
 <CaptionsTrack mode="karaoke" />
 
-// 或者在单个场景的 Sequence 内部
+// or inside a single scene's Sequence
 <Captions sceneId="03-conv" mode="karaoke" />
 ```
 
-| mode | 效果 | 适用 |
+| mode | effect | best for |
 |------|------|------|
-| `line` | 整行一次性出现 | 画面信息已经很密时 |
-| `karaoke` | 整行常驻，当前词高亮 | **默认，最推荐** |
-| `reveal` | 逐词出现 | 需要强牵引注意力时 |
+| `line` | the whole line appears at once | when the visuals are already dense |
+| `karaoke` | the line stays put, the spoken word is highlighted | **default, most recommended** |
+| `reveal` | words appear one at a time | when you need to strongly pull attention |
 
-**越南语字体**：必须加载带完整声调符号的字体，别指望系统兜底。
+**Vietnamese font**: you must load a font with full tone-mark coverage — don't rely on the
+system fallback stack.
 
 ```tsx
 import { loadFont } from "@remotion/google-fonts/BeVietnamPro";
@@ -373,31 +380,31 @@ const { fontFamily } = loadFont();
 <CaptionsTrack fontFamily={fontFamily} />
 ```
 
-### 用 Cue 驱动动画（关键）
+### Driving Animation with Cues (Important)
 
-这是本 skill 最重要的一条架构原则：
+This is this skill's single most important architectural principle:
 
 ```tsx
-// ❌ 硬编码帧号 —— 解说词一改就全乱
+// ❌ hardcoded frame number -- breaks the moment the narration changes
 <FocusBox startFrame={45} />
 
-// ✅ 锚在台词上 —— 重新配音后动画自动跟着走
+// ✅ anchored to a phrase -- re-recording the narration keeps the animation in sync
 import { useCue, useCueProgress, useAfterCue } from "./useCue";
 
 <FocusBox startFrame={useCue("03-conv", "window")} />
 ```
 
-可用的 hook：
+Available hooks:
 
-| Hook | 返回 | 用途 |
+| Hook | Returns | Use for |
 |------|------|------|
-| `useCue(sceneId, name)` | 场景内相对帧 | 元素何时入场 |
-| `useAfterCue(sceneId, name, offset?)` | boolean | 条件渲染 |
-| `useCueProgress(sceneId, from, to)` | 0→1 | 动画正好跨越对应的那段解说 |
-| `useSpokenWordIndex(sceneId)` | 当前词的下标 | 跟读高亮 |
-| `useCurrentLine(sceneId)` | 当前字幕行 | 自定义字幕样式 |
+| `useCue(sceneId, name)` | scene-relative frame | when an element should enter |
+| `useAfterCue(sceneId, name, offset?)` | boolean | conditional rendering |
+| `useCueProgress(sceneId, from, to)` | 0→1 | an animation that should span exactly that stretch of narration |
+| `useSpokenWordIndex(sceneId)` | index of the current word | karaoke-style highlighting |
+| `useCurrentLine(sceneId)` | the current caption line | custom caption styling |
 
-典型用法——让滑窗动画正好跟着「相乘…加起来」这段话走：
+Typical usage — making a sliding-window animation track exactly the "multiply ... add up" clause:
 
 ```tsx
 const Scene03: React.FC = () => {
@@ -413,86 +420,92 @@ const Scene03: React.FC = () => {
 };
 ```
 
-cue 找不到时不会崩，会退回 0 并在控制台告警；`align_captions.py`
-跑完也会把找不到的 cue 列出来（通常是 `cues` 里的短语和 `text` 对不上）。
+A missing cue doesn't crash — it falls back to 0 and warns in the console.
+`align_captions.py` also lists any cues it couldn't find after it finishes (usually because
+the phrase in `cues` doesn't match `text` verbatim).
 
 ---
 
-## 预览循环（渲染前必做）
+## The Preview Loop (Do This Before Every Render)
 
-**问题**：写视频代码是「盲写」——写完只能整段渲染，几分钟后才看到结果，
-而绝大多数问题（图像转了 90°、相机抖、文字出画、元素一次性全冒出来）
-**看一眼就知道，看代码却看不出来**。
+**The problem**: writing video code is "flying blind" — you can only see the result after
+a full render, minutes later, and most bugs (an image rotated 90°, a jittering camera, text
+running off-screen, elements all appearing at once) are **obvious at a glance and invisible
+in the source**.
 
-**做法**：低分辨率抽帧，几秒钟出图，然后**真的去看**。
+**The fix**: render sparse frames at low resolution, in seconds, and **actually look at them**.
 
 ```bash
-python scripts/preview.py                      # 每个场景抽 3 帧
+python scripts/preview.py                      # 3 frames per scene
 python scripts/preview.py --frames-per-scene 5
-python scripts/preview.py --scenes 03-conv     # 只看一个场景
-python scripts/preview.py --at 0,120,450       # 指定绝对帧
-python scripts/preview.py --scale 0.6          # 看细节时调高
+python scripts/preview.py --scenes 03-conv     # just one scene
+python scripts/preview.py --at 0,120,450       # specific absolute frames
+python scripts/preview.py --scale 0.6          # bump up when checking detail
 ```
 
-输出 `out/preview/` 下的单帧 PNG，外加一张把它们拼在一起的 `_sheet.png` 联系表 ——
-**看这一张就能同时看到所有抽样帧**，比逐个打开省事得多。
+Outputs individual PNGs under `out/preview/`, plus one `_sheet.png` contact sheet stitching
+them together — **looking at that one image shows every sampled frame at once**, far less
+tedious than opening them one by one.
 
-> 联系表上的标签需要 ffmpeg 的 `drawtext` 滤镜（很多 Homebrew 版本没编 libfreetype）
-> 或者 Pillow。两个都没有时图还是照出，只是没有烧上去的标签 ——
-> 文件名里仍然写着场景和帧号。`pip install pillow` 即可解决。
-帧位置由**真实音频时长**推出来，所以抽的是每个场景真正的开头/中间/结尾。
+> Labels on the contact sheet need ffmpeg's `drawtext` filter (many Homebrew builds ship
+> without libfreetype) or Pillow. Without either, the stills still render, just without the
+> burned-in label — the filename still carries the scene and frame number. `pip install pillow`
+> fixes it.
+Frame positions are derived from **real audio duration**, so what gets sampled is the actual
+start/middle/end of each scene.
 
-### 自检清单
+### Self-review checklist
 
-看图时逐条过一遍（脚本跑完也会打印这份清单）：
+Go through this while looking at the images (the script also prints it after it finishes):
 
-| 维度 | 检查 |
+| Dimension | Check |
 |------|------|
-| 布局 | 文字出画没有？在安全区内吗？1080p 下最小的字还看得清吗？ |
-| 朝向 | 网格/图像有没有被转或镜像？（`row→y` 且要翻转，`col→x`） |
-| 节奏 | 元素是依次出现还是一股脑全冒出来？场景第一帧是不是空的？ |
-| 相机 | 对比相邻两帧，画面有没有轻微抖动/缩放？ |
-| 配色 | 颜色是在表达含义，还是纯装饰？ |
-| 内容 | 每个场景是不是只讲一个概念？数值合理吗（进度 >100% 说明忘了 clamp）？ |
+| Layout | Does any text run off-frame? Is it inside the safe zone? Is the smallest text still legible at 1080p? |
+| Orientation | Is any grid/image rotated or mirrored? (`row→y`, `col→x`, and y must be flipped) |
+| Pacing | Do elements appear one at a time, or all at once? Is the first frame of a scene empty? |
+| Camera | Compare two adjacent frames — any subtle jitter or zoom drift? |
+| Color | Does color carry meaning, or is it just decoration? |
+| Content | Does each scene cover exactly one concept? Do the numbers make sense (progress >100% means a missing clamp)? |
 
-3D 场景默认带 `--gl=angle`（见「WebGL 上下文溢出」）。
+3D scenes default to `--gl=angle` (see "WebGL Context Overflow").
 
-**迭代节奏**：`改代码 → preview → 看图 → 再改`，确认无误后才整段渲染。
-一次抽 12 帧大约十几秒，整段渲染动辄好几分钟——预览这一步几乎总是划算的。
+**Iteration rhythm**: `edit code → preview → look → edit again`, only committing to a full
+render once it looks right. Sampling 12 frames takes roughly ten seconds; a full render takes
+several minutes — the preview step is almost always worth it.
 
 ---
 
-## 教程类视频架构（场景驱动）
+## Tutorial Video Architecture (Scene-Driven)
 
-教程、讲解类视频的核心架构：**音频驱动场景切换**。
+The core architecture for tutorial/explainer videos: **audio-driven scene switching**.
 
-### 架构概览
+### Architecture Overview
 
 ```
-script.json → TTS 生成 → audioConfig.ts ┐
-                       → captions.ts    ┴→ 场景组件 → 预览抽帧 → 视频渲染
+script.json → TTS generation → audioConfig.ts ┐
+                              → captions.ts    ┴→ scene components → preview stills → video render
 ```
 
-关键思想：
-1. **音频决定时长**：每个场景的持续时间由音频长度决定，绝不硬编码
-2. **场景即章节**：一个概念 = 一个场景 = 一段音频
-3. **配置即真理**：`script.json` 是唯一数据源，`src/generated/` 全部自动生成
-4. **锚在台词上**：场景内部的动画时机用 cue，不用帧号（见「字幕与语音锚点」）
+Key ideas:
+1. **Audio decides duration**: every scene's length comes from its audio length — never hardcoded
+2. **A scene is a chapter**: one concept = one scene = one audio clip
+3. **Config is the source of truth**: `script.json` is the only hand-edited file; everything in `src/generated/` is generated
+4. **Anchor to the narration**: time animations inside a scene with cues, not frame numbers (see "Captions and Speech Cues")
 
-### 生成产物
+### Generated Output
 
-`src/generated/audioConfig.ts`（由 `generate_audio.py` 写出，勿手改）：
+`src/generated/audioConfig.ts` (written by `generate_audio.py` — do not edit by hand):
 
-| 导出 | 说明 |
+| Export | Description |
 |------|------|
-| `SCENES` | 场景数组：`id` / `title` / `durationInFrames` / `audioFile` / `durationInSeconds` |
-| `getSceneStart(i)` | 第 i 个场景的绝对起始帧 |
-| `getSceneIndexAtFrame(f)` | 绝对帧落在哪个场景 |
-| `FPS` / `TAIL_FRAMES` / `TOTAL_FRAMES` | 帧率与总时长 |
+| `SCENES` | array of scenes: `id` / `title` / `durationInFrames` / `audioFile` / `durationInSeconds` |
+| `getSceneStart(i)` | absolute start frame of the i-th scene |
+| `getSceneIndexAtFrame(f)` | which scene an absolute frame falls into |
+| `FPS` / `TAIL_FRAMES` / `TOTAL_FRAMES` | frame rate and total duration |
 
-### 场景切换 Hook
+### Scene-switching hook
 
-切换逻辑已经在生成的配置里，直接用即可：
+The switching logic is already in the generated config — just use it directly:
 
 ```tsx
 import { useSceneIndex } from "./useCue";
@@ -502,7 +515,7 @@ const sceneIndex = useSceneIndex();
 const currentScene = SCENES[sceneIndex];
 ```
 
-### 主场景组件模式
+### Root scene component pattern
 
 ```tsx
 import { AbsoluteFill, Audio, Sequence, staticFile, useVideoConfig } from "remotion";
@@ -518,31 +531,31 @@ export const TutorialVideo: React.FC = () => {
 
   return (
     <AbsoluteFill style={{ backgroundColor: "#1a1a2e" }}>
-      {/* 3D 内容 —— 同一时刻只挂一个 ThreeCanvas，避免 WebGL 上下文溢出 */}
+      {/* 3D content -- only ever mount ONE ThreeCanvas at a time, to avoid WebGL context overflow */}
       <ThreeCanvas width={width} height={height} camera={{ position: [0, 0, 4], fov: 50 }}>
         {sceneIndex === 0 && <Scene01Intro />}
         {sceneIndex === 1 && <Scene02Concept />}
         {sceneIndex === 2 && <Scene03Demo />}
       </ThreeCanvas>
 
-      {/* 音频同步 - 每个场景一个 Sequence */}
+      {/* audio sync - one Sequence per scene */}
       {SCENES.map((scene, idx) => (
         <Sequence key={scene.id} from={getSceneStart(idx)} durationInFrames={scene.durationInFrames}>
           <Audio src={staticFile(`audio/${scene.audioFile}`)} />
         </Sequence>
       ))}
 
-      {/* 字幕：一行搞定，帧号由 captions.ts 提供 */}
+      {/* captions: one line, frame numbers come from captions.ts */}
       <CaptionsTrack mode="karaoke" />
 
-      {/* UI 层：标题 + 进度 */}
+      {/* UI layer: title + progress */}
       <div style={{ position: "absolute", top: 40, left: 0, right: 0, textAlign: "center" }}>
-        <h1 style={{ color: "white", fontSize: 42 }}>教程标题</h1>
+        <h1 style={{ color: "white", fontSize: 42 }}>Tutorial Title</h1>
       </div>
       <div style={{ position: "absolute", bottom: 60, left: 60 }}>
         <span style={{ color: "white" }}>{currentScene?.title}</span>
       </div>
-      {/* 进度条 */}
+      {/* progress bar */}
       <div style={{ position: "absolute", bottom: 30, left: 60, right: 60, height: 4, backgroundColor: "rgba(255,255,255,0.2)" }}>
         <div style={{ width: `${((sceneIndex + 1) / SCENES.length) * 100}%`, height: "100%", backgroundColor: "#3498DB" }} />
       </div>
@@ -551,7 +564,7 @@ export const TutorialVideo: React.FC = () => {
 };
 ```
 
-### Root.tsx 使用动态帧数
+### Root.tsx with a dynamic frame count
 
 ```tsx
 import { Composition } from "remotion";
@@ -564,7 +577,7 @@ export const RemotionRoot: React.FC = () => {
       id="Tutorial"
       component={TutorialVideo}
       fps={30}
-      durationInFrames={TOTAL_FRAMES}  // 从 audioConfig 动态获取
+      durationInFrames={TOTAL_FRAMES}  // derived dynamically from audioConfig
       width={1920}
       height={1080}
     />
@@ -572,29 +585,78 @@ export const RemotionRoot: React.FC = () => {
 };
 ```
 
-### ⚠️ 教程视频踩坑经验
+### ⚠️ Tutorial Video Lessons Learned
 
-| 问题 | 原因 | 解决方案 |
+| Problem | Cause | Fix |
 |------|------|----------|
-| 场景切换生硬 | 直接切换无过渡 | 用 spring/interpolate 添加入场动画 |
-| 3D 内容与音频不同步 | 硬编码帧数 | 所有时长从 audioConfig 读取 |
-| 渲染时 WebGL 崩溃 | 多个 ThreeCanvas 同时存在 | 用 sceneIndex 条件渲染，同时只有一个 3D 场景 |
-| 视频太简略 | 只有一个大场景 | **一个概念 = 一个场景组件**，分层讲解 |
+| Scene transitions feel abrupt | hard cut with no transition | add an entrance animation with spring/interpolate |
+| 3D content desyncs from audio | hardcoded frame counts | read every duration from audioConfig |
+| WebGL crashes during render | multiple ThreeCanvas instances alive at once | conditionally render by sceneIndex, only one 3D scene at a time |
+| Video feels too simple/sparse | just one big scene | **one concept = one scene component**, layer the explanation |
+| Visuals are flat, not eye-catching | static solid-color background + hard scene cuts | use `templates/src/SceneLayout.tsx`, see below |
 
-### 场景组件设计原则
+### Scene shell: SceneLayout (safe zone + ambient background + entrance animation)
 
-1. **单一职责**：每个场景组件只负责一个概念
-2. **独立动画**：每个场景有自己的 useCurrentFrame()，动画从 0 开始
-3. **延迟出现**：用 delay 参数控制元素依次出现
-4. **相机适配**：不同场景可能需要不同相机位置
+```bash
+cp templates/src/SceneLayout.tsx templates/src/theme.ts src/
+```
+
+Wrap every scene component in `<SceneLayout>` and get three things for free:
 
 ```tsx
-// 场景组件示例
+import { SceneLayout } from "./SceneLayout";
+
+const Scene03: React.FC = () => (
+  <SceneLayout hook="How convolution works">
+    {/* scene content */}
+  </SceneLayout>
+);
+```
+
+- **Safe zone**: defaults assume a 1080×1920 vertical composition (TikTok/Reels/Shorts) —
+  reserving ~180px at the top (avatar/follow button) and ~380px at the bottom (caption text,
+  music ticker, right-side like/share rail). For 16:9 or 1:1 video, pass smaller
+  `safeTop`/`safeBottom`/`safeSide` values.
+- **Ambient background**: two blurred color blobs drift via sin/cos — turns a flat static
+  background "alive" instantly.
+- **Entrance spring**: every scene scales up from 90% and fades in, replacing a hard cut.
+
+Pair it with a single global progress bar in the root component for a much more polished feel:
+
+```tsx
+// A root component like BackpropVideo.tsx -- note that useCurrentFrame() here is the
+// GLOBAL absolute frame, since this is not inside any <Sequence>, so it's a real
+// whole-video progress value.
+const ProgressBar: React.FC = () => {
+  const frame = useCurrentFrame();
+  const progress = Math.min(1, frame / TOTAL_FRAMES);
+  return (
+    <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 6, background: "rgba(255,255,255,0.08)" }}>
+      <div style={{ width: `${progress * 100}%`, height: "100%", background: COLORS.highlight }} />
+    </div>
+  );
+};
+```
+
+**Only use motion where it means something**: give an edge/node that's "currently happening"
+a breathing glow or a flowing dashed line; keep "settled/inactive" ones still — motion itself
+is a form of semantics. Don't animate every element at once, or the viewer won't know where
+to look (echoing the 3B1B principle above).
+
+### Scene Component Design Principles
+
+1. **Single responsibility**: each scene component covers exactly one concept
+2. **Independent animation**: each scene has its own `useCurrentFrame()`, animation starts from 0
+3. **Staggered appearance**: use a `delay` parameter to make elements appear one after another
+4. **Camera adaptation**: different scenes may need different camera positions
+
+```tsx
+// example scene component
 const Scene02Input: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // 入场动画
+  // entrance animation
   const gridScale = spring({ frame, fps, config: { damping: 15 } });
 
   return (
@@ -605,25 +667,25 @@ const Scene02Input: React.FC = () => {
 };
 ```
 
-### 相机控制器模式
+### Camera Controller Pattern
 
 ```tsx
 import { useThree } from "@react-three/fiber";
 
-// ✅ 推荐写法：直接设置相机位置，避免插值导致的持续抖动
+// ✅ Recommended: set the camera position directly, avoiding the persistent jitter that interpolation causes
 const CameraController: React.FC<{ sceneIndex: number }> = ({ sceneIndex }) => {
   const { camera } = useThree();
 
   const cameraSettings: Record<number, [number, number, number]> = {
-    0: [0, 0, 4],      // 开场：正面
-    1: [0, 0, 3],      // 输入层：靠近
-    2: [-0.5, 0, 3.5], // 卷积：偏左
-    3: [0, 0, 5],      // 总结：拉远全景
+    0: [0, 0, 4],      // opening: front-on
+    1: [0, 0, 3],      // input layer: close up
+    2: [-0.5, 0, 3.5], // convolution: offset left
+    3: [0, 0, 5],      // summary: pull back for a wide shot
   };
 
   const target = cameraSettings[sceneIndex] || [0, 0, 4];
 
-  // 直接设置位置，不用插值
+  // set the position directly, no interpolation
   camera.position.set(target[0], target[1], target[2]);
   camera.lookAt(0, 0, 0);
 
@@ -631,26 +693,27 @@ const CameraController: React.FC<{ sceneIndex: number }> = ({ sceneIndex }) => {
 };
 ```
 
-⚠️ **不要用 `position += (target - position) * factor` 这种写法**，永远无法精确收敛，会导致画面持续抖动。详见「🚨 3D 场景常见陷阱 - 陷阱1」。
+⚠️ **Don't write `position += (target - position) * factor`** — it never converges exactly,
+and causes persistent jitter. See "🚨 Common 3D Scene Pitfalls - Pitfall 1" below.
 
 ---
 
-## 常用功能
+## Common Features
 
-### 添加视频/音频
+### Adding video/audio
 
 ```tsx
 import { Video, Audio, staticFile } from "remotion";
 
-// 使用 public/ 目录下的文件
+// files under public/
 <Video src={staticFile("background.mp4")} />
 <Audio src={staticFile("music.mp3")} volume={0.5} />
 
-// 外部 URL
+// external URL
 <Video src="https://example.com/video.mp4" />
 ```
 
-### 添加图片
+### Adding images
 
 ```tsx
 import { Img, staticFile } from "remotion";
@@ -658,10 +721,10 @@ import { Img, staticFile } from "remotion";
 <Img src={staticFile("logo.png")} style={{ width: 200 }} />
 ```
 
-### 参数化视频（动态数据）
+### Parameterized video (dynamic data)
 
 ```tsx
-// 定义 props schema
+// define the props schema
 const myCompSchema = z.object({
   title: z.string(),
   bgColor: z.string(),
@@ -675,7 +738,7 @@ export const MyVideo: React.FC<z.infer<typeof myCompSchema>> = ({ title, bgColor
   );
 };
 
-// 注册时传入默认值
+// pass default values at registration
 <Composition
   id="MyVideo"
   component={MyVideo}
@@ -685,50 +748,50 @@ export const MyVideo: React.FC<z.infer<typeof myCompSchema>> = ({ title, bgColor
 />
 ```
 
-## 渲染输出
+## Rendering Output
 
-### CLI 渲染
+### CLI rendering
 
 ```bash
-# 渲染为 MP4
+# render to MP4
 npx remotion render MyVideo out/video.mp4
 
-# 指定编码器
+# specify a codec
 npx remotion render --codec=h264 MyVideo out/video.mp4
 
-# WebM 格式
+# WebM format
 npx remotion render --codec=vp8 MyVideo out/video.webm
 
 # GIF
 npx remotion render --codec=gif MyVideo out/video.gif
 
-# 仅音频
+# audio only
 npx remotion render --codec=mp3 MyVideo out/audio.mp3
 
-# 图片序列
+# image sequence
 npx remotion render --sequence MyVideo out/frames
 
-# 单帧静态图
+# a single still frame
 npx remotion still MyVideo --frame=30 out/thumbnail.png
 ```
 
-### 常用渲染参数
+### Common render flags
 
-| 参数 | 说明 |
+| Flag | Description |
 |------|------|
-| `--codec` | h264, h265, vp8, vp9, gif, mp3, wav 等 |
-| `--crf` | 质量 (0-51，越小越好，默认18) |
-| `--props` | JSON 格式传入 props |
-| `--scale` | 缩放因子 |
-| `--concurrency` | 并行渲染数 |
+| `--codec` | h264, h265, vp8, vp9, gif, mp3, wav, etc. |
+| `--crf` | quality (0-51, lower is better, default 18) |
+| `--props` | pass props as JSON |
+| `--scale` | scale factor |
+| `--concurrency` | parallel render workers |
 
-## 高级功能
+## Advanced Features
 
-### 字幕 (@remotion/captions)
+### Captions (@remotion/captions)
 
 ```bash
 npm i @remotion/captions @remotion/install-whisper-cpp
-npx remotion-install-whisper-cpp  # 安装 Whisper
+npx remotion-install-whisper-cpp  # install Whisper
 ```
 
 ```ts
@@ -741,7 +804,7 @@ const { transcription } = await transcribe({
 });
 ```
 
-### 播放器嵌入 Web 应用
+### Embedding the player in a web app
 
 ```bash
 npm i @remotion/player
@@ -763,41 +826,41 @@ import { MyVideo } from "./MyVideo";
 />
 ```
 
-### AWS Lambda 渲染
+### AWS Lambda rendering
 
 ```bash
 npm i @remotion/lambda
-npx remotion lambda policies role   # 设置 IAM
-npx remotion lambda sites create    # 部署站点
-npx remotion lambda render <site-url> MyVideo  # 渲染
+npx remotion lambda policies role   # set up IAM
+npx remotion lambda sites create    # deploy the site
+npx remotion lambda render <site-url> MyVideo  # render
 ```
 
-## 3D 视频制作（@remotion/three）
+## 3D Video (@remotion/three)
 
-使用 React Three Fiber 在 Remotion 中创建 3D 动画视频。
+Using React Three Fiber to create 3D animated video inside Remotion.
 
-### 适用场景
+### Good fits
 
-| 场景 | 说明 | 示例 |
+| Use case | Description | Example |
 |------|------|------|
-| 产品展示 | 3D 模型旋转、拆解动画 | 手机产品宣传片 |
-| 角色动画 | 卡通角色讲解、故事叙述 | 育儿科普视频 |
-| 数据可视化 | 3D 图表、空间数据 | 地理信息、建筑展示 |
-| Logo 动画 | 品牌 3D Logo 入场 | 片头片尾 |
+| Product showcase | 3D model rotation, exploded-view animation | phone product promo |
+| Character animation | cartoon character explainer, storytelling | kids-educational video |
+| Data visualization | 3D charts, spatial data | geo data, building/architecture showcase |
+| Logo animation | branded 3D logo intro | opening/closing titles |
 
-### 安装
+### Installation
 
 ```bash
 npm i three @react-three/fiber @remotion/three @types/three
 ```
 
-**官方模板**（推荐新手）：
+**Official template** (recommended for beginners):
 
 ```bash
 npx create-video@latest --template three
 ```
 
-### 基础示例
+### Basic example
 
 ```tsx
 import { ThreeCanvas } from "@remotion/three";
@@ -805,22 +868,22 @@ import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
 import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
 
-// 3D 场景组件
+// 3D scene component
 const My3DScene = () => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const camera = useThree((state) => state.camera);
 
-  // 设置相机
+  // set up the camera
   useEffect(() => {
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
   }, [camera]);
 
-  // 旋转动画
+  // rotation animation
   const rotation = interpolate(frame, [0, durationInFrames], [0, Math.PI * 2]);
 
-  // 弹性入场
+  // spring entrance
   const scale = spring({ frame, fps, config: { damping: 10, stiffness: 100 } });
 
   return (
@@ -831,7 +894,7 @@ const My3DScene = () => {
   );
 };
 
-// 视频组件
+// video component
 export const My3DVideo = () => {
   const { width, height } = useVideoConfig();
 
@@ -845,7 +908,7 @@ export const My3DVideo = () => {
 };
 ```
 
-### 加载 GLTF 模型
+### Loading a GLTF model
 
 ```tsx
 import { useGLTF } from "@react-three/drei";
@@ -861,13 +924,13 @@ const Model = () => {
 };
 ```
 
-**安装 drei**（React Three Fiber 工具库）：
+**Installing drei** (React Three Fiber's utility library):
 
 ```bash
 npm i @react-three/drei
 ```
 
-### 视频作为 3D 纹理
+### Video as a 3D texture
 
 ```tsx
 import { ThreeCanvas, useVideoTexture } from "@remotion/three";
@@ -888,7 +951,7 @@ const VideoOnMesh = () => {
 };
 ```
 
-渲染时使用 `useOffthreadVideoTexture()` 确保帧精确：
+Use `useOffthreadVideoTexture()` during rendering to guarantee frame accuracy:
 
 ```tsx
 import { useOffthreadVideoTexture } from "@remotion/three";
@@ -896,43 +959,43 @@ import { useOffthreadVideoTexture } from "@remotion/three";
 const texture = useOffthreadVideoTexture({ src: staticFile("/video.mp4") });
 ```
 
-### 3D 角色组合技巧
+### 3D Character Assembly Tricks
 
-用基础几何体组合角色（无需专业建模）：
+Build a character out of primitive geometry (no modeling skills required):
 
 ```tsx
-// 简单卡通角色：头 + 身体 + 四肢
+// A simple cartoon character: head + body + limbs
 const CartoonCharacter = ({ emotion = "happy" }) => {
   const frame = useCurrentFrame();
 
-  // 表情控制
+  // expression control
   const eyeScale = emotion === "happy" ? 1 : 0.5;
   const mouthRotation = emotion === "happy" ? 0 : Math.PI;
 
-  // 走路动画：腿部摆动
+  // walk cycle: leg swing
   const legSwing = Math.sin(frame * 0.2) * 0.3;
 
   return (
     <group>
-      {/* 头部 - 球体 */}
+      {/* head - sphere */}
       <mesh position={[0, 1.5, 0]}>
         <sphereGeometry args={[0.5, 32, 32]} />
         <meshStandardMaterial color="#FFE4C4" />
       </mesh>
 
-      {/* 身体 - 胶囊体 */}
+      {/* body - capsule */}
       <mesh position={[0, 0.5, 0]}>
         <capsuleGeometry args={[0.3, 0.8, 16, 32]} />
         <meshStandardMaterial color="#4169E1" />
       </mesh>
 
-      {/* 左腿 */}
+      {/* left leg */}
       <mesh position={[-0.15, -0.3, 0]} rotation={[legSwing, 0, 0]}>
         <cylinderGeometry args={[0.08, 0.08, 0.6]} />
         <meshStandardMaterial color="#333" />
       </mesh>
 
-      {/* 右腿 */}
+      {/* right leg */}
       <mesh position={[0.15, -0.3, 0]} rotation={[-legSwing, 0, 0]}>
         <cylinderGeometry args={[0.08, 0.08, 0.6]} />
         <meshStandardMaterial color="#333" />
@@ -942,55 +1005,55 @@ const CartoonCharacter = ({ emotion = "happy" }) => {
 };
 ```
 
-### ⚠️ 踩坑经验
+### ⚠️ Lessons Learned
 
-#### WebGL 上下文溢出
+#### WebGL Context Overflow
 
-**问题**：多个 3D 场景同时渲染时报错 `Error creating WebGL context`
+**Symptom**: rendering multiple 3D scenes at once throws `Error creating WebGL context`
 
-**原因**：浏览器限制 WebGL 上下文数量（通常 8-16 个）
+**Cause**: browsers cap the number of live WebGL contexts (typically 8-16)
 
-**解决方案**：
+**Fix**:
 
-1. **渲染配置**：使用 `angle` OpenGL 引擎
+1. **Render config**: use the `angle` OpenGL backend
 
 ```ts
 // remotion.config.ts
 export default {
   chromiumOptions: {
-    gl: "angle",  // 或 "angle-egl"
+    gl: "angle",  // or "angle-egl"
   },
 };
 ```
 
-CLI 渲染时：
+For CLI rendering:
 
 ```bash
 npx remotion render --gl=angle MyVideo out.mp4
 ```
 
-2. **懒加载场景**：只渲染当前帧附近的 3D 内容
+2. **Lazy-load scenes**: only render 3D content near the current frame
 
 ```tsx
 import { useCurrentFrame } from "remotion";
 
 const LazyScene = ({ sceneStart, sceneDuration, children }) => {
   const frame = useCurrentFrame();
-  const buffer = 30; // 缓冲 30 帧
+  const buffer = 30; // 30-frame buffer
 
-  // 只在场景时间范围 ± buffer 内渲染
+  // only render within the scene's time range ± buffer
   const shouldRender =
     frame >= sceneStart - buffer &&
     frame <= sceneStart + sceneDuration + buffer;
 
   if (!shouldRender) {
-    return null; // 不渲染，释放 WebGL 上下文
+    return null; // don't render -- releases the WebGL context
   }
 
   return <>{children}</>;
 };
 
-// 使用
+// usage
 <Sequence from={0} durationInFrames={150}>
   <LazyScene sceneStart={0} sceneDuration={150}>
     <Scene1 />
@@ -1003,9 +1066,9 @@ const LazyScene = ({ sceneStart, sceneDuration, children }) => {
 </Sequence>
 ```
 
-#### 服务端渲染配置
+#### Server-side render configuration
 
-服务端渲染（SSR）必须配置 `gl` 选项：
+Server-side rendering (SSR) must also set the `gl` option:
 
 ```ts
 // renderMedia() / renderFrames() / getCompositions()
@@ -1019,68 +1082,84 @@ await renderMedia({
 });
 ```
 
-#### Sequence 内的 useCurrentFrame
+#### useCurrentFrame() inside a Sequence
 
-`<Sequence>` 内部的 `useCurrentFrame()` 返回的是**相对于 Sequence 开始的帧号**，不是全局帧号。
+`useCurrentFrame()` inside a `<Sequence>` returns the frame **relative to that Sequence's
+start**, not the global frame.
 
 ```tsx
 <Sequence from={60} durationInFrames={90}>
-  <MyScene />  {/* 这里 useCurrentFrame() 从 0 开始，不是 60 */}
+  <MyScene />  {/* useCurrentFrame() here starts at 0, not 60 */}
 </Sequence>
 ```
 
-### 进阶资源
+**But `useVideoConfig().durationInFrames` does NOT follow suit** — it always returns the
+**whole Composition's total duration**, not the current Sequence's. Using it to compute
+in-scene progress is a trap:
 
-| 资源 | 用途 | 链接 |
+```tsx
+// ❌ durationInFrames is the WHOLE video's frame count (e.g. 2048), not this
+// scene's (e.g. 151). Progress may only reach 7% by the time the scene actually ends.
+const progress = frame / useVideoConfig().durationInFrames;
+
+// ✅ look up this scene's own duration by id from the generated config
+import { SCENES } from "./generated/audioConfig";
+const sceneDuration = SCENES.find((s) => s.id === "08-loop")!.durationInFrames;
+const progress = Math.min(1, frame / sceneDuration);
+```
+
+### Further Resources
+
+| Resource | Purpose | Link |
 |------|------|------|
-| **Mixamo** | 免费骨骼动画库 | https://www.mixamo.com |
-| **Sketchfab** | 免费/付费 3D 模型 | https://sketchfab.com |
-| **Ready Player Me** | 虚拟人物生成 | https://readyplayer.me |
-| **Spline** | 在线 3D 设计工具 | https://spline.design |
-| **gltfjsx** | GLTF 转 React 组件 | `npx gltfjsx model.glb` |
+| **Mixamo** | free skeletal animation library | https://www.mixamo.com |
+| **Sketchfab** | free/paid 3D models | https://sketchfab.com |
+| **Ready Player Me** | avatar generation | https://readyplayer.me |
+| **Spline** | online 3D design tool | https://spline.design |
+| **gltfjsx** | convert GLTF to a React component | `npx gltfjsx model.glb` |
 
-### 进阶方向
+### Where to go from here
 
-1. **Blender → GLTF**：用 Blender 建模，导出 GLTF 格式，用 `useGLTF` 加载
-2. **Mixamo 动画**：下载 FBX 动画，转换为 GLTF，用 `useAnimations` 播放
-3. **Spline 设计**：在 Spline 设计 3D 场景，用 `@splinetool/r3f-spline` 导入
+1. **Blender → GLTF**: model in Blender, export as GLTF, load with `useGLTF`
+2. **Mixamo animation**: download an FBX animation, convert to GLTF, play it with `useAnimations`
+3. **Spline design**: design a 3D scene in Spline, import it with `@splinetool/r3f-spline`
 
 ---
 
-## 3Blue1Brown 风格指南（教程类视频）
+## 3Blue1Brown Style Guide (For Tutorial Videos)
 
-针对教程、讲解类视频，借鉴 3Blue1Brown 的可视化设计原则。
+For tutorial/explainer videos, borrow 3Blue1Brown's visualization design principles.
 
-### 核心理念
+### Core Philosophy
 
 ```
-3B1B 内核：让观众「自己发现」，而不是「被告知答案」
+The 3B1B core idea: let the viewer "discover it themselves" rather than "be told the answer"
 ```
 
-| 原则 | 说明 | 示例 |
+| Principle | Description | Example |
 |------|------|------|
-| **Why → What** | 先提问为什么，再展示是什么 | "如何识别手写数字？" → 展示神经网络 |
-| **逐步构建** | 元素一个个出现，不要整体淡入 | 神经元依次点亮，而非同时出现 |
-| **颜色有语义** | 颜色传达信息，不是装饰 | 蓝=正、红=负、黄=高亮 |
-| **数值具象化** | 显示具体数字让抽象概念落地 | 像素值 0.7、激活值 0.92 |
-| **2D 优先** | 清晰优先于炫酷，必要时才用 3D | 网络结构用 2D，空间数据用 3D |
+| **Why → What** | ask why before showing what | "How do you recognize a handwritten digit?" → then show the neural network |
+| **Build up gradually** | elements appear one by one, not all fading in together | neurons light up in sequence, not simultaneously |
+| **Color is semantic** | color conveys information, not decoration | blue = positive, red = negative, yellow = highlight |
+| **Make numbers concrete** | show actual numbers to ground abstract ideas | pixel value 0.7, activation 0.92 |
+| **2D first** | clarity beats flashiness; reach for 3D only when needed | 2D for network structure, 3D for spatial data |
 
-### 配色方案
+### Color Palette
 
 ```tsx
-// 3B1B 风格配色（语义化）
+// 3B1B-style palette (semantic)
 const COLORS_3B1B = {
-  background: "#000000",     // 纯黑背景
-  positive: "#58C4DD",       // 蓝色 - 正权重/正向
-  negative: "#FF6B6B",       // 红色 - 负权重/负向
-  highlight: "#FFFF00",      // 黄色 - 当前焦点/高亮
-  result: "#83C167",         // 绿色 - 结果/正确
-  text: "#FFFFFF",           // 白色 - 文字
-  neutral: "#888888",        // 灰色 - 中性/未激活
-  accent: "#FF8C00",         // 橙色 - 强调
+  background: "#000000",     // pure black background
+  positive: "#58C4DD",       // blue - positive weight / positive direction
+  negative: "#FF6B6B",       // red - negative weight / negative direction
+  highlight: "#FFFF00",      // yellow - current focus / highlight
+  result: "#83C167",         // green - result / correct
+  text: "#FFFFFF",           // white - text
+  neutral: "#888888",        // gray - neutral / inactive
+  accent: "#FF8C00",         // orange - emphasis
 };
 
-// 使用示例
+// usage example
 <meshStandardMaterial
   color={weight > 0 ? COLORS_3B1B.positive : COLORS_3B1B.negative}
   emissive={isHighlighted ? COLORS_3B1B.highlight : "#000"}
@@ -1088,37 +1167,37 @@ const COLORS_3B1B = {
 />
 ```
 
-### 2D/3D 混合策略
+### 2D/3D Mixing Strategy
 
-| 内容类型 | 推荐维度 | 原因 |
+| Content type | Recommended dimension | Reason |
 |----------|----------|------|
-| 网络结构图 | 2D | 层次清晰，易于标注 |
-| 数据流向 | 2D + 动画箭头 | 强调顺序和因果 |
-| 卷积操作 | 2D 俯视图 | 网格对齐，数值可见 |
-| 特征图堆叠 | 2.5D（透视） | 展示深度/通道数 |
-| 3D 物体识别 | 3D | 内容本身是 3D |
+| Network structure diagram | 2D | clear hierarchy, easy to label |
+| Data flow | 2D + animated arrows | emphasizes order and causality |
+| Convolution operation | 2D top-down view | grid alignment, values visible |
+| Feature map stacking | 2.5D (perspective) | shows depth/channel count |
+| 3D object recognition | 3D | the content is inherently 3D |
 
-**2D 模式实现**：使用正交相机 + 扁平几何体
+**2D-mode implementation**: orthographic camera + flat geometry
 
 ```tsx
 import { OrthographicCamera } from "@react-three/drei";
 
-// 正交相机 = 无透视变形 = 2D 感觉
+// orthographic camera = no perspective distortion = reads as 2D
 <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={100} />
 
-// 扁平几何体
+// flat geometry
 <mesh>
-  <planeGeometry args={[1, 1]} />  {/* 2D 平面 */}
+  <planeGeometry args={[1, 1]} />  {/* a 2D plane */}
   <meshBasicMaterial color={color} />
 </mesh>
 ```
 
-### 逐步构建动画
+### Staggered Build-Up Animation
 
-**核心**：用 `delay` 参数控制元素依次出现
+**Core idea**: use a `delay` parameter to make elements appear one after another
 
 ```tsx
-// 批量元素逐个出现
+// a batch of elements, appearing one by one
 const StaggeredGroup: React.FC<{
   children: React.ReactNode[];
   delayPerItem?: number
@@ -1148,7 +1227,7 @@ const StaggeredGroup: React.FC<{
   );
 };
 
-// 使用
+// usage
 <StaggeredGroup delayPerItem={10}>
   <Neuron position={[0, 0, 0]} />
   <Neuron position={[1, 0, 0]} />
@@ -1156,7 +1235,7 @@ const StaggeredGroup: React.FC<{
 </StaggeredGroup>
 ```
 
-### 数值标签组件
+### Value Label Component
 
 ```tsx
 import { Text } from "@react-three/drei";
@@ -1166,7 +1245,7 @@ const ValueLabel: React.FC<{
   position: [number, number, number];
   fontSize?: number;
 }> = ({ value, position, fontSize = 0.15 }) => {
-  // 根据值选择颜色
+  // pick a color based on the value
   const color = value > 0.5 ? COLORS_3B1B.positive :
                 value < -0.5 ? COLORS_3B1B.negative :
                 COLORS_3B1B.neutral;
@@ -1178,7 +1257,7 @@ const ValueLabel: React.FC<{
       color={color}
       anchorX="center"
       anchorY="middle"
-      font="/fonts/JetBrainsMono-Regular.ttf"  // 等宽字体
+      font="/fonts/JetBrainsMono-Regular.ttf"  // monospace font
     >
       {value.toFixed(2)}
     </Text>
@@ -1186,10 +1265,10 @@ const ValueLabel: React.FC<{
 };
 ```
 
-### 高亮焦点组件
+### Highlight/Focus Component
 
 ```tsx
-// 脉冲高亮框 - 引导注意力
+// a pulsing highlight box -- pulls the eye
 const FocusBox: React.FC<{
   position: [number, number, number];
   size: [number, number];
@@ -1200,7 +1279,7 @@ const FocusBox: React.FC<{
 
   return (
     <group position={position}>
-      {/* 高亮框 */}
+      {/* highlight box */}
       <mesh scale={[pulse, pulse, 1]}>
         <planeGeometry args={size} />
         <meshBasicMaterial
@@ -1209,12 +1288,12 @@ const FocusBox: React.FC<{
           opacity={0.2}
         />
       </mesh>
-      {/* 边框 */}
+      {/* border */}
       <lineSegments>
         <edgesGeometry args={[new THREE.PlaneGeometry(...size)]} />
         <lineBasicMaterial color={COLORS_3B1B.highlight} linewidth={2} />
       </lineSegments>
-      {/* 标签 */}
+      {/* label */}
       {label && (
         <Text position={[0, size[1] / 2 + 0.2, 0]} fontSize={0.12} color={COLORS_3B1B.highlight}>
           {label}
@@ -1225,92 +1304,93 @@ const FocusBox: React.FC<{
 };
 ```
 
-### 脚本撰写指南（教程类）
+### Script-Writing Guide (Tutorial Style)
 
-**❌ 宣布式（避免）**：
+**❌ Announcement style (avoid)**:
 ```
-"首先是输入层。图像是一个数字矩阵。"
-"接下来是卷积层。卷积核在图像上滑动。"
-```
-
-**✅ 探索式（推荐）**：
-```
-"你能轻松认出这是数字 7，但你能描述你是怎么做到的吗？
-（停顿 1 秒）
-这正是神经网络要解决的问题。
-
-让我们先看看计算机「看到」的是什么——
-（数字网格逐个显示）
-不是图像，而是 784 个数字。
-
-那么问题来了：如何从这堆数字中识别出 7？"
+"First, the input layer. The image is a matrix of numbers."
+"Next, the convolution layer. The kernel slides across the image."
 ```
 
-**脚本结构模板**：
-
+**✅ Exploratory style (recommended)**:
 ```
-1. 🎯 提出问题（10%）
-   - 用观众能共鸣的问题开场
-   - "你有没有想过..."
+"You can instantly tell this is the digit 7, but could you describe HOW you did it?
+(pause 1s)
+That's exactly the problem a neural network has to solve.
 
-2. 🤔 直觉猜测（15%）
-   - 引导观众思考可能的方案
-   - "也许我们可以..."
+Let's first look at what the computer actually 'sees' --
+(the pixel grid appears one cell at a time)
+not an image, but 784 numbers.
 
-3. 🔍 逐步验证（50%）
-   - 一步步展示机制
-   - 每一步都回答「为什么这样设计」
-
-4. 📐 形式化（15%）
-   - 展示数学公式（可选）
-   - 将直觉转化为精确描述
-
-5. 🎬 回顾总结（10%）
-   - 完整流程快速回放
-   - 强调核心洞见
+So here's the question: how do you recognize a 7 out of a pile of numbers like that?"
 ```
 
-### ⚠️ 常见误区
+**Script structure template**:
 
-| 误区 | 问题 | 改进 |
+```
+1. 🎯 Pose the question (10%)
+   - open with a question the audience can relate to
+   - "Have you ever wondered..."
+
+2. 🤔 Intuitive guess (15%)
+   - invite the audience to think about possible approaches
+   - "Maybe we could..."
+
+3. 🔍 Build it up step by step (50%)
+   - reveal the mechanism one step at a time
+   - answer "why was it designed this way" at every step
+
+4. 📐 Formalize it (15%)
+   - show the math (optional)
+   - turn the intuition into a precise description
+
+5. 🎬 Recap (10%)
+   - a quick replay of the whole flow
+   - reinforce the core insight
+```
+
+### ⚠️ Common Pitfalls
+
+| Pitfall | Problem | Fix |
 |------|------|------|
-| 3D 炫技 | 旋转、透视分散注意力 | 用最简单的视角表达 |
-| 颜色随意 | 红绿蓝只是装饰 | 建立颜色-含义映射 |
-| 整体出现 | 观众不知道看哪里 | 逐个元素 + 高亮引导 |
-| 只说 What | 观众不理解设计动机 | 先问 Why 再展示 What |
-| 信息过载 | 一个场景塞太多概念 | 一个场景一个概念 |
+| Gratuitous 3D | rotation/perspective distracts from the point | use the simplest angle that makes the point |
+| Arbitrary color | red/green/blue used as pure decoration | establish a color-to-meaning mapping |
+| Everything appears at once | the viewer doesn't know where to look | reveal elements one at a time + guide with highlights |
+| Only shows "What" | the viewer doesn't understand the motivation | ask "Why" before showing "What" |
+| Information overload | too many concepts crammed into one scene | one scene, one concept |
 
 ---
 
-## 过程动画模式（Process Animation）
+## Process Animation Pattern
 
-**核心理念**：不只展示「是什么」，更要展示「怎么算」。让观众亲眼看到数据如何流动、计算如何发生。
+**Core idea**: don't just show "what it is" — show "how it's computed". Let the viewer watch
+data flow and computation happen with their own eyes.
 
-### 适用场景
+### Good fits
 
-| 场景 | 说明 | 示例 |
+| Use case | Description | Example |
 |------|------|------|
-| 算法可视化 | 展示每一步操作 | 排序、搜索、图遍历 |
-| 数学公式推导 | 逐项展开计算 | 矩阵乘法、卷积运算 |
-| 数据处理流程 | 输入→变换→输出 | CNN 前向传播、数据清洗 |
-| 决策过程 | 比较、筛选、最终选择 | 池化取最大值、softmax |
+| Algorithm visualization | show every operation, step by step | sorting, search, graph traversal |
+| Math derivation | expand a calculation term by term | matrix multiplication, convolution |
+| Data pipeline | input → transform → output | CNN forward pass, data cleaning |
+| Decision process | compare, filter, pick a final answer | max-pooling, softmax |
 
-### 动画模式分类
+### Animation Pattern Categories
 
 ```
-静态展示 → 结构动画 → 过程动画
-   ↓           ↓           ↓
-  截图      元素出现     计算过程
-            淡入淡出     数据流动
-            相机移动     结果写入
+Static display → Structural animation → Process animation
+   ↓                    ↓                     ↓
+screenshot        elements appear       computation happens
+                  fade in/out            data flows
+                  camera moves           results get written
 ```
 
-### 过程动画组件库
+### Process Animation Component Library
 
-#### 1. 计算步骤展示（StepByStep）
+#### 1. Step-by-step calculation display (StepByStep)
 
 ```tsx
-// 逐步显示计算过程
+// reveal a calculation one step at a time
 const StepByStepCalc: React.FC<{
   steps: string[];      // ["1×0.5", "+ 0×0.3", "+ 1×(-0.2)", "= 0.3"]
   startFrame: number;
@@ -1346,10 +1426,10 @@ const StepByStepCalc: React.FC<{
 };
 ```
 
-#### 2. 数值飞入动画（ValueFlyIn）
+#### 2. Value fly-in animation (ValueFlyIn)
 
 ```tsx
-// 计算结果飞入目标位置
+// a computed result flies into its target position
 const ValueFlyIn: React.FC<{
   value: number;
   from: [number, number, number];
@@ -1374,7 +1454,7 @@ const ValueFlyIn: React.FC<{
     from[2] + (to[2] - from[2]) * progress,
   ];
 
-  const scale = 1.5 - 0.5 * progress; // 飞行时放大，落地时缩小
+  const scale = 1.5 - 0.5 * progress; // bigger while flying, shrinks on landing
 
   return (
     <Text
@@ -1390,10 +1470,10 @@ const ValueFlyIn: React.FC<{
 };
 ```
 
-#### 3. 区域高亮比较（CompareHighlight）
+#### 3. Compare-and-highlight (CompareHighlight)
 
 ```tsx
-// 多个值依次比较，胜出者高亮
+// compare a set of values one by one, highlight the winner
 const CompareHighlight: React.FC<{
   values: number[];
   positions: [number, number, number][];
@@ -1402,7 +1482,7 @@ const CompareHighlight: React.FC<{
 }> = ({ values, positions, startFrame, framesPerCompare = 15 }) => {
   const frame = useCurrentFrame();
 
-  // 计算当前比较进度
+  // compute how far through the comparison we are
   const compareIndex = Math.floor((frame - startFrame) / framesPerCompare);
   const maxIndex = values.indexOf(Math.max(...values));
 
@@ -1433,15 +1513,15 @@ const CompareHighlight: React.FC<{
 };
 ```
 
-#### 4. 滑动窗口（SlidingWindow）
+#### 4. Sliding window (SlidingWindow)
 
 ```tsx
-// 卷积核/池化窗口滑动
+// a convolution kernel / pooling window sliding across a grid
 const SlidingWindow: React.FC<{
-  gridSize: number;         // 输入网格大小
-  windowSize: number;       // 窗口大小 (3 for 3x3)
-  stride: number;           // 步幅
-  currentStep: number;      // 当前步骤 (0, 1, 2, ...)
+  gridSize: number;         // input grid size
+  windowSize: number;       // window size (3 for 3x3)
+  stride: number;           // stride
+  currentStep: number;      // current step (0, 1, 2, ...)
   onPositionChange?: (row: number, col: number) => void;
 }> = ({ gridSize, windowSize, stride, currentStep }) => {
   const outputSize = Math.floor((gridSize - windowSize) / stride) + 1;
@@ -1451,7 +1531,7 @@ const SlidingWindow: React.FC<{
   const row = Math.floor(step / outputSize) * stride;
   const col = (step % outputSize) * stride;
 
-  // 窗口位置（相对于网格中心）
+  // window position (relative to the grid's center)
   const pixelSize = 0.12;
   const gap = 0.01;
   const offset = (gridSize / 2 - 0.5) * (pixelSize + gap);
@@ -1476,90 +1556,91 @@ const SlidingWindow: React.FC<{
 };
 ```
 
-### 脚本撰写指南（过程动画版）
+### Script-Writing Guide (Process Animation Version)
 
-**关键转变**：脚本需要配合动画节奏，给动画「留白时间」。
+**The key shift**: the script needs to match the animation's pacing — leave "breathing room"
+for it.
 
-**❌ 传统脚本（信息密集）**：
+**❌ Traditional script (information-dense)**:
 ```
-"卷积核在图像上滑动，每到一个位置就做点乘运算，得到一个数值。"
-（一句话带过，观众还没看清发生了什么）
-```
-
-**✅ 过程动画脚本（留白配合）**：
-```
-"让我们看看卷积是怎么计算的。"
-（停顿 - 窗口移动到位置）
-
-"卷积核覆盖了这 9 个像素。"
-（停顿 - 高亮 3x3 区域）
-
-"我们把每个像素值，和对应的权重相乘..."
-（停顿 - 逐步显示乘法）
-
-"然后把所有结果加起来。"
-（停顿 - 显示求和过程）
-
-"得到的这个数字，就写入特征图的对应位置。"
-（停顿 - 结果飞入）
-
-"第一个位置完成了。接下来，窗口向右滑动一格..."
-（加速展示后续步骤）
+"The kernel slides across the image, doing a dot product at each position to get a value."
+(one sentence rushes past it, the viewer hasn't even seen what happened yet)
 ```
 
-### 时间分配建议
+**✅ Process-animation script (paced with pauses)**:
+```
+"Let's see how convolution actually computes something."
+(pause -- the window moves into position)
 
-| 详细程度 | 首次完整展示 | 重复加速 | 适用场景 |
+"The kernel covers these 9 pixels."
+(pause -- the 3x3 region highlights)
+
+"We multiply each pixel value by its matching weight..."
+(pause -- the multiplications appear one by one)
+
+"then add all the results together."
+(pause -- the sum is shown)
+
+"This number gets written into the matching spot in the feature map."
+(pause -- the result flies in)
+
+"First position, done. Now the window slides one step to the right..."
+(speed up through the remaining steps)
+```
+
+### Suggested Time Budget
+
+| Level of detail | First full pass | Repeated (sped up) | Best for |
 |----------|--------------|----------|----------|
-| 极详细 | 3-4 秒/步 | 0.5 秒/步 | 核心概念首次出现 |
-| 中等 | 2 秒/步 | 0.3 秒/步 | 辅助概念 |
-| 快速 | 1 秒/步 | 闪过 | 已解释过的重复 |
+| Very detailed | 3-4s/step | 0.5s/step | a core concept's first appearance |
+| Medium | 2s/step | 0.3s/step | supporting concepts |
+| Fast | 1s/step | flash by | a repeat of something already explained |
 
-**示例：卷积场景时间分配**
+**Example: time budget for a convolution scene**
 
 ```
-总时长：~25 秒
+Total: ~25s
 
-0-3s:   引入（"让我们看看卷积是怎么计算的"）
-3-12s:  第 1 次卷积（完整详细展示）
-        - 窗口移动 (1s)
-        - 高亮区域 (1s)
-        - 计算过程 (4s)
-        - 结果飞入 (2s)
-        - 解说旁白 (1s)
-12-18s: 第 2-3 次卷积（中等速度，简化解说）
-18-23s: 剩余位置（快速滑动，仅显示结果）
-23-25s: 展示完整特征图
+0-3s:   intro ("Let's see how convolution actually computes something")
+3-12s:  1st convolution (full, detailed)
+        - window moves (1s)
+        - region highlights (1s)
+        - computation (4s)
+        - result flies in (2s)
+        - narration (1s)
+12-18s: 2nd-3rd convolution (medium speed, lighter narration)
+18-23s: remaining positions (fast slide, results only)
+23-25s: show the complete feature map
 ```
 
-### ⚠️ 过程动画踩坑经验
+### ⚠️ Process Animation Lessons Learned
 
-| 问题 | 原因 | 解决方案 |
+| Problem | Cause | Fix |
 |------|------|----------|
-| 动画太快看不清 | 时间分配不足 | 增加关键步骤的帧数 |
-| 解说与动画不同步 | 脚本没有留白 | 重写脚本，加入停顿标记 |
-| 信息过载 | 一次展示太多 | 分阶段：先结构，再过程 |
-| 重复内容无聊 | 每次都详细展示 | 首次详细 + 后续加速 |
-| 数值太小看不见 | 3D 文字渲染问题 | 用 2D HTML overlay |
-| **相机持续抖动** | 插值永不收敛 | 见下方「相机控制陷阱」 |
-| **图像旋转90度** | 行列坐标映射反了 | 见下方「网格坐标陷阱」 |
-| **进度显示好几千%** | progress 变量未 clamp | `Math.min(1, (frame - start) / duration)` |
-| **特征图只有色块无数值** | 组件缺少数值显示功能 | 添加 `values` + `showValues` 参数 |
+| Animation too fast to follow | not enough frames budgeted | add more frames to the key steps |
+| Narration desyncs from animation | script had no pauses built in | rewrite the script with explicit pause markers |
+| Information overload | too much shown at once | phase it: structure first, then process |
+| Repeats feel boring | every repeat shown in full detail | detailed the first time, sped up after |
+| Values too small to read | 3D text rendering limitations | use a 2D HTML overlay instead |
+| **Persistent camera jitter** | interpolation that never converges | see "Camera Control Pitfall" below |
+| **Image rotated 90°** | row/column coordinates got swapped | see "Grid Coordinate Pitfall" below |
+| **Progress shows several thousand percent** | the `progress` variable isn't clamped | `Math.min(1, (frame - start) / duration)` |
+| **Feature map shows blank color blocks, no values** | the component has no value-display support | add `values` + `showValues` params |
 
-#### 进度变量必须 clamp
+#### Progress variables must be clamped
 
 ```tsx
-// ❌ 错误：场景持续时间可能远超预期，progress 会变成 5000%
+// ❌ Wrong: the scene's actual duration can far exceed what you assumed, and progress can hit 5000%
 const calcProgress = frame > 30 ? (frame - 30) / 60 : 0;
 
-// ✅ 正确：限制在 [0, 1] 范围
+// ✅ Right: clamp to [0, 1]
 const calcProgress = frame > 30 ? Math.min(1, (frame - 30) / 60) : 0;
 ```
 
-#### 特征图显示计算结果
+#### Feature maps should display their computed values
 
 ```tsx
-// FeatureMap 组件应支持显示数值
+// A FeatureMap component should support showing numeric values
 <FeatureMap
   position={[2, 0, 0]}
   size={0.6}
@@ -1567,20 +1648,20 @@ const calcProgress = frame > 30 ? Math.min(1, (frame - 30) / 60) : 0;
   color={COLORS.result}
   filledCells={filledCount}
   gridSize={6}
-  values={[2, -1, 0, 3, ...]}  // 每个格子的计算结果
-  showValues                    // 启用数值显示
+  values={[2, -1, 0, 3, ...]}  // the computed value in each cell
+  showValues                    // turn on value display
 />
 ```
 
-### 🚨 3D 场景常见陷阱
+### 🚨 Common 3D Scene Pitfalls
 
-#### 陷阱 1：相机持续抖动
+#### Pitfall 1: Persistent camera jitter
 
-**症状**：画面一直微微放大-缩小抖动
+**Symptom**: the frame keeps subtly zooming in and out, jittering
 
-**错误写法**：
+**Wrong**:
 ```tsx
-// ❌ 永远无法精确到达目标，导致持续微抖动
+// ❌ never converges exactly, causes persistent micro-jitter
 const CameraController = ({ targetZ }) => {
   const { camera } = useThree();
   const frame = useCurrentFrame();
@@ -1593,9 +1674,9 @@ const CameraController = ({ targetZ }) => {
 };
 ```
 
-**正确写法**：
+**Right**:
 ```tsx
-// ✅ 方案A：使用 spring 动画（推荐）
+// ✅ Option A: use spring animation (recommended)
 const CameraController = ({ targetZ, transitionFrame = 0 }) => {
   const { camera } = useThree();
   const frame = useCurrentFrame();
@@ -1613,7 +1694,7 @@ const CameraController = ({ targetZ, transitionFrame = 0 }) => {
   return null;
 };
 
-// ✅ 方案B：直接设置（无过渡）
+// ✅ Option B: set it directly (no transition)
 const CameraController = ({ targetZ }) => {
   const { camera } = useThree();
   camera.position.set(0, 0, targetZ);
@@ -1621,58 +1702,58 @@ const CameraController = ({ targetZ }) => {
   return null;
 };
 
-// ✅ 方案C：插值但加阈值
+// ✅ Option C: interpolate but snap once close enough
 useEffect(() => {
   const delta = targetZ - camera.position.z;
   if (Math.abs(delta) < 0.001) {
-    camera.position.z = targetZ; // 接近时直接设置
+    camera.position.z = targetZ; // snap once close
   } else {
     camera.position.z += delta * 0.1;
   }
 }, [frame]);
 ```
 
-#### 陷阱 2：网格图像旋转90度
+#### Pitfall 2: A grid/image rotated 90°
 
-**症状**：本应显示为正常方向的图像（如数字7）被旋转了90度
+**Symptom**: an image that should display right-side up (e.g. the digit 7) appears rotated by 90°
 
-**根因**：图像处理中 `row` 对应 y 轴（从上到下），`col` 对应 x 轴（从左到右），
-但代码里把行索引映射到了 x 坐标，列索引映射到了 y 坐标。
+**Root cause**: in image processing, `row` maps to the y-axis (top to bottom) and `col` maps
+to the x-axis (left to right) — but the code mapped the row index to x and the column index to y.
 
-**错误写法**：
+**Wrong**:
 ```tsx
-// ❌ row 映射到 x，col 映射到 y，图像会旋转90度
+// ❌ row mapped to x, col mapped to y -- rotates the image 90°
 for (let row = 0; row < size; row++) {
   for (let col = 0; col < size; col++) {
-    const x = (row - size/2) * cellSize;  // 错！row 应该是 y
-    const y = (col - size/2) * cellSize;  // 错！col 应该是 x
+    const x = (row - size/2) * cellSize;  // wrong! row should be y
+    const y = (col - size/2) * cellSize;  // wrong! col should be x
     // ...
   }
 }
 ```
 
-**正确写法**：
+**Right**:
 ```tsx
-// ✅ col 映射到 x，row 映射到 y（且 y 要翻转）
+// ✅ col maps to x, row maps to y (and y must be flipped)
 for (let row = 0; row < size; row++) {
   for (let col = 0; col < size; col++) {
     const x = (col - size/2 + 0.5) * cellSize;           // col → x
-    const y = ((size - 1 - row) - size/2 + 0.5) * cellSize; // row → y（翻转）
+    const y = ((size - 1 - row) - size/2 + 0.5) * cellSize; // row → y (flipped)
     // ...
   }
 }
 ```
 
-**记忆口诀**：
-- 图像坐标：`image[row][col]` = `image[y][x]`（行是y，列是x）
-- 3D 坐标：x 向右，y 向上
-- 翻转 row：图像 row=0 在顶部，3D y=max 在顶部
+**Rule of thumb**:
+- Image coordinates: `image[row][col]` = `image[y][x]` (row is y, column is x)
+- 3D coordinates: x points right, y points up
+- Flip row: image row=0 is at the top; 3D y=max is at the top
 
 ---
 
-## 工作流最佳实践
+## Workflow Best Practices
 
-### 推荐的 npm scripts 配置
+### Recommended npm scripts
 
 ```json
 {
@@ -1681,92 +1762,99 @@ for (let row = 0; row < size; row++) {
     "audio": "python3 scripts/generate_audio.py",
     "captions": "python3 scripts/align_captions.py",
     "preview": "python3 scripts/preview.py",
-    "prepare": "npm run audio && npm run captions",
+    "media": "npm run audio && npm run captions",
     "render": "remotion render Main out/video.mp4 --gl=angle",
-    "build": "npm run prepare && npm run preview && npm run render"
+    "build": "npm run media && npm run preview && npm run render"
   }
 }
 ```
 
-### 标准迭代循环
+> **⚠️ Don't call it `prepare`**: this is an npm-reserved lifecycle script name, and
+> `npm install` runs it automatically. Name it that and every teammate who installs
+> dependencies passively triggers a full narration generation — MiniMax costs money,
+> VieNeu downloads a model, and it wastes time and invites failures for no reason.
+> Use `media` or any other non-reserved name.
+
+### Standard iteration loop
 
 ```
-改 script.json ──▶ npm run prepare ──┐
-                                      ├──▶ npm run preview ──▶ 看图 ──▶ 满意？
-改场景组件 ─────────────────────────┘                             │
-      ▲                                                            │ 否
+edit script.json ──▶ npm run media ──┐
+                                      ├──▶ npm run preview ──▶ look ──▶ happy?
+edit a scene component ─────────────┘                             │
+      ▲                                                            │ no
       └────────────────────────────────────────────────────────────┘
-                                                                   │ 是
+                                                                   │ yes
                                                     npm run render ─┘
 ```
 
-**不要跳过 preview 直接 render。** 整段渲染要好几分钟，抽帧只要十几秒，
-而且大多数问题只有看图才发现得了。
+**Don't skip preview and go straight to render.** A full render takes minutes; sampling
+frames takes seconds, and most problems are only visible by looking at an image.
 
-### 实时进度显示
+### Real-time progress
 
-音频生成和视频渲染都可能耗时较长，**务必使用前台执行**以便看到进度：
+Both narration generation and video rendering can take a while — **always run them in the
+foreground** so you can see progress:
 
 ```bash
-# ✅ 推荐：前台执行，实时显示进度
+# ✅ recommended: foreground, real-time progress
 npm run audio
 npm run render
 
-# ✅ 或者用 shell 脚本封装
+# ✅ or wrap it in a shell script
 bash scripts/render.sh
 
-# ❌ 避免：后台执行看不到进度
+# ❌ avoid: backgrounded, no visible progress
 npm run render &
 ```
 
-**render.sh 示例**：
+**Example render.sh**:
 ```bash
 #!/bin/bash
 cd "$(dirname "$0")/.."
-echo "🎬 开始渲染视频..."
+echo "🎬 Rendering video..."
 npx remotion render MyVideo out/video.mp4
 if [ $? -eq 0 ]; then
-    echo "✅ 渲染完成!"
+    echo "✅ Render complete!"
     ls -lh out/video.mp4
 else
-    echo "❌ 渲染失败"
+    echo "❌ Render failed"
     exit 1
 fi
 ```
 
-### 断点续作设计原则
+### Resumability Design Principles
 
-长时间任务（如批量生成音频）应支持断点续作：
+Long-running tasks (like batch audio generation) should support resuming:
 
-1. **检查已存在文件**：跳过已完成的项目
-2. **原子操作**：单个文件生成失败不影响已完成的
-3. **进度保存**：失败时保留已完成的部分
-4. **幂等执行**：重复运行产生相同结果
+1. **Check for existing files**: skip work that's already done
+2. **Atomic operations**: one file failing shouldn't affect the ones already completed
+3. **Preserve progress**: keep whatever finished if the run fails partway through
+4. **Idempotent execution**: running it again produces the same result
 
-## 调试技巧
+## Debugging Tips
 
-1. **Studio 热重载**：`npm run dev` 实时预览
-2. **检查帧**：Studio 中拖动时间轴逐帧检查
-3. **性能**：避免在组件内做重计算，用 `useMemo`
-4. **静态文件**：放在 `public/` 目录，用 `staticFile()` 引用
+1. **Studio hot reload**: `npm run dev` for a live preview
+2. **Inspect frames**: scrub the timeline in Studio to check frame by frame
+3. **Performance**: avoid heavy computation inside components — use `useMemo`
+4. **Static files**: put them under `public/` and reference with `staticFile()`
 
-## 常见问题
+## FAQ
 
-**Q: 视频渲染很慢？**
-- 使用 `--concurrency` 增加并行数
-- 降低分辨率测试：`--scale=0.5`
-- 考虑 AWS Lambda 分布式渲染
+**Q: Rendering is really slow?**
+- increase parallelism with `--concurrency`
+- test at lower resolution: `--scale=0.5`
+- consider distributed rendering with AWS Lambda
 
-**Q: 字体不显示？**
-- 使用 `@remotion/google-fonts` 或本地加载
-- 确保字体在渲染前已加载
+**Q: Fonts aren't showing up?**
+- use `@remotion/google-fonts` or load a local font
+- make sure the font is loaded before rendering starts
 
-**Q: 视频素材不播放？**
-- 检查视频编码格式（推荐 H.264）
-- 使用 `<OffthreadVideo>` 替代 `<Video>` 提升性能
+**Q: Video assets won't play?**
+- check the video codec (H.264 is recommended)
+- use `<OffthreadVideo>` instead of `<Video>` for better performance
 
-## 参考资源
+## References
 
-- 官方文档：https://remotion.dev/docs
-- 模板库：https://remotion.dev/templates
-- GitHub：https://github.com/remotion-dev/remotion
+- Official docs: https://remotion.dev/docs
+- Template gallery: https://remotion.dev/templates
+- GitHub: https://github.com/remotion-dev/remotion

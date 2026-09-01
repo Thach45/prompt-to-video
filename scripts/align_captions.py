@@ -194,6 +194,12 @@ def align(
     return out
 
 
+# Words that must never end a caption line: they are the first half of a
+# Vietnamese spoken decimal ("không phẩy tám" = "zero point eight") and
+# splitting here strands "point" without its digit on the next line.
+_NO_LINE_BREAK_AFTER = {"phẩy", "chấm"}
+
+
 def chunk_lines(words: List[Dict[str, Any]], max_words: int, max_chars: int) -> List[Dict[str, Any]]:
     """Group words into subtitle lines, breaking on punctuation or length."""
     lines: List[Dict[str, Any]] = []
@@ -215,22 +221,38 @@ def chunk_lines(words: List[Dict[str, Any]], max_words: int, max_chars: int) -> 
     for i, w in enumerate(words):
         current.append(i)
         joined = " ".join(words[j]["text"] for j in current)
-        if SENTENCE_END.search(w["text"]) or len(current) >= max_words or len(joined) >= max_chars:
+        over_limit = len(current) >= max_words or len(joined) >= max_chars
+        dangling = normalize_token(w["text"]) in _NO_LINE_BREAK_AFTER
+        if SENTENCE_END.search(w["text"]) or (over_limit and not dangling):
             flush()
     flush()
     return lines
 
 
 def find_cue(words: List[Dict[str, Any]], phrase: str) -> Optional[int]:
-    """Index of the first word of `phrase` within the aligned words."""
+    """
+    Index of the first word of `phrase` within the aligned words.
+
+    Both sides drop punctuation-only tokens (e.g. a bare "—") before matching.
+    `words` keeps them as real entries (they still need a timestamp for
+    rendering), so without this the two token streams fall out of step the
+    moment a cue phrase spans a dash or ellipsis and never match at all.
+    """
     target = [normalize_token(t) for t in tokenize(phrase)]
     target = [t for t in target if t]
     if not target:
         return None
-    keys = [normalize_token(w["text"]) for w in words]
+
+    keys, key_to_word = [], []
+    for i, w in enumerate(words):
+        k = normalize_token(w["text"])
+        if k:
+            keys.append(k)
+            key_to_word.append(i)
+
     for i in range(len(keys) - len(target) + 1):
         if keys[i:i + len(target)] == target:
-            return i
+            return key_to_word[i]
     return None
 
 

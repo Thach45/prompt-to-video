@@ -72,12 +72,26 @@ export const Captions: React.FC<CaptionsProps> = ({
   const line = scene.lines.find((l) => frame >= l.startFrame && frame <= l.endFrame);
   if (!line) return null;
 
-  const opacity = interpolate(
-    frame,
-    [line.startFrame, line.startFrame + fade, line.endFrame - fade, line.endFrame],
-    [0, 1, 1, 0],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-  );
+  // interpolate() requires a strictly increasing input range. A short line
+  // (duration <= 2*fade) would make startFrame+fade collide with or pass
+  // endFrame-fade, so shrink the fade to fit -- and skip it entirely rather
+  // than dividing a 1-frame line into four identical points.
+  const lineDuration = line.endFrame - line.startFrame;
+  const effectiveFade = Math.min(fade, Math.floor((lineDuration - 1) / 2));
+  const opacity =
+    effectiveFade > 0
+      ? interpolate(
+          frame,
+          [
+            line.startFrame,
+            line.startFrame + effectiveFade,
+            line.endFrame - effectiveFade,
+            line.endFrame,
+          ],
+          [0, 1, 1, 0],
+          { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+        )
+      : 1;
 
   const words = scene.words.slice(line.wordStart, line.wordEnd + 1);
 

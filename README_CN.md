@@ -1,9 +1,15 @@
-# remotion-video
+# prompt-to-video
 
 [English](README.md)
 
 使用 Remotion 框架编程式创建视频的 Claude Code Skill —— 带 AI 配音、
 自动生成帧级对齐的字幕，并在渲染前抽帧自检。
+
+<p align="center">
+  <img src="examples/preview.gif" width="280" alt="示例：一个球滚下损失函数山谷，全程由本 skill 生成" />
+</p>
+
+<p align="center"><em>↑ 4.5 秒片段，完整视频见 <a href="examples/gradient-descent.mp4">examples/gradient-descent.mp4</a></em></p>
 
 ## 功能特点
 
@@ -24,8 +30,8 @@
 将整个文件夹复制到 Claude Code skills 目录：
 
 ```bash
-git clone https://github.com/wshuyi/remotion-video-skill.git
-cp -r remotion-video-skill ~/.claude/skills/remotion-video
+git clone https://github.com/Thach45/prompt-to-video.git
+cp -r prompt-to-video ~/.claude/skills/remotion-video
 ```
 
 然后重启 Claude Code 或开启新会话。
@@ -118,6 +124,12 @@ my-video-project/
 - Python 3.9+
 - ffmpeg / ffprobe
 
+## 致谢
+
+- Fork 自 [wshuyi/remotion-video-skill](https://github.com/wshuyi/remotion-video-skill)
+- [VieNeu-TTS](https://github.com/pnnbao97/VieNeu-TTS) 提供本地越南语配音与克隆
+- [Remotion](https://remotion.dev) 让视频即 React 成为可能
+
 ## 许可证
 
-MIT
+MIT —— 见 [LICENSE](LICENSE)
